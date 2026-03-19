@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 // Hard-coded doctor data with specialties and body part mappings
 const doctors = [
   {
@@ -50,6 +53,35 @@ const doctors = [
   }
 ];
 
+// DB persistence
+const DB_PATH = path.join(__dirname, 'db.json');
+
+function loadDB() {
+  try {
+    if (fs.existsSync(DB_PATH)) {
+      const data = fs.readFileSync(DB_PATH, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error('Error loading DB:', err);
+  }
+  return { patients: [], appointments: [], chatSessions: {} };
+}
+
+function saveDB() {
+  try {
+    const data = JSON.stringify({ patients, appointments, chatSessions }, null, 2);
+    fs.writeFileSync(DB_PATH, data, 'utf8');
+  } catch (err) {
+    console.error('Error saving DB:', err);
+  }
+}
+
+const db = loadDB();
+let patients = db.patients || [];
+let appointments = db.appointments || [];
+let chatSessions = db.chatSessions || {};
+
 // Generate availability slots for the next 45 days
 function generateAvailabilities() {
   const availabilities = [];
@@ -68,9 +100,6 @@ function generateAvailabilities() {
       const slotHours = [9, 9.5, 10, 10.5, 11, 11.5, 13, 13.5, 14, 14.5, 15, 15.5, 16];
 
       for (const hour of slotHours) {
-        // Randomly mark ~30% as unavailable
-        if (Math.random() < 0.3) continue;
-
         const slotDate = new Date(date);
         slotDate.setHours(Math.floor(hour), (hour % 1) * 60, 0, 0);
 
@@ -92,11 +121,16 @@ function generateAvailabilities() {
   return availabilities;
 }
 
-// In-memory stores
 let availabilities = generateAvailabilities();
-let appointments = [];
-let patients = [];
-let chatSessions = {};
+
+// Sync booked status from persisted appointments
+function syncAvailabilities() {
+  appointments.forEach(apt => {
+    const slot = availabilities.find(s => s.id === apt.slotId);
+    if (slot) slot.booked = true;
+  });
+}
+syncAvailabilities();
 
 // Find the best matching doctor for a body part / reason
 function matchDoctor(reason) {
@@ -108,7 +142,7 @@ function matchDoctor(reason) {
     let score = 0;
     for (const bodyPart of doctor.bodyParts) {
       if (reasonLower.includes(bodyPart.toLowerCase())) {
-        score += bodyPart.length; // longer matches = more specific = higher score
+        score += bodyPart.length;
       }
     }
     if (score > bestScore) {
@@ -140,11 +174,6 @@ function searchAvailabilities({ doctorId, preferredDay, preferredTimeRange, limi
       if (range.includes('morning')) return hour < 12;
       if (range.includes('afternoon')) return hour >= 12 && hour < 17;
       if (range.includes('evening')) return hour >= 17;
-      // Handle "after 3pm" type requests
-      const afterMatch = range.match(/after\s*(\d+)/);
-      if (afterMatch) return hour >= parseInt(afterMatch[1]);
-      const beforeMatch = range.match(/before\s*(\d+)/);
-      if (beforeMatch) return hour < parseInt(beforeMatch[1]);
       return true;
     });
   }
@@ -162,6 +191,7 @@ function bookAppointment({ slotId, patientId, reason }) {
 
   const appointment = {
     id: `apt-${Date.now()}`,
+    slotId,
     patientId,
     doctorId: slot.doctorId,
     doctorName: slot.doctorName,
@@ -175,6 +205,7 @@ function bookAppointment({ slotId, patientId, reason }) {
   };
 
   appointments.push(appointment);
+  saveDB();
   return { success: true, appointment };
 }
 
@@ -186,6 +217,7 @@ function createPatient(data) {
     createdAt: new Date().toISOString()
   };
   patients.push(patient);
+  saveDB();
   return patient;
 }
 
@@ -193,14 +225,15 @@ function getPatient(id) {
   return patients.find(p => p.id === id);
 }
 
-// Find patient by phone
 function getPatientByPhone(phone) {
   const cleanFormat = (p) => (p || '').replace(/\D/g, '');
   const cleanSearch = cleanFormat(phone);
   if (!cleanSearch) return null;
+  // Match last 10 digits to handle international/local variations (+1 etc)
+  const searchSuffix = cleanSearch.slice(-10);
   return patients
     .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .find(p => cleanFormat(p.phone) === cleanSearch);
+    .find(p => cleanFormat(p.phone).slice(-10) === searchSuffix);
 }
 
 // Chat session management
@@ -211,11 +244,11 @@ function getChatSession(sessionId) {
       messages: [],
       createdAt: new Date().toISOString()
     };
+    saveDB();
   }
   return chatSessions[sessionId];
 }
 
-// Find the latest session for a patient
 function getLatestSessionForPatient(patientId) {
   const sessions = Object.values(chatSessions).filter(s => s.patientId === patientId);
   if (!sessions.length) return null;
@@ -225,6 +258,7 @@ function getLatestSessionForPatient(patientId) {
 function addMessage(sessionId, role, content) {
   const session = getChatSession(sessionId);
   session.messages.push({ role, content, timestamp: new Date().toISOString() });
+  saveDB();
   return session;
 }
 

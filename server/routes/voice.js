@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getChatSession, getPatient } = require('../data/store');
+const { getChatSession, getPatient, getPatientByPhone, getLatestSessionForPatient } = require('../data/store');
 
 // POST /api/voice/handoff - Initiate voice call handoff
 router.post('/handoff', async (req, res) => {
@@ -30,7 +30,7 @@ router.post('/handoff', async (req, res) => {
     const vapiAssistantId = process.env.VAPI_ASSISTANT_ID;
     const vapiPhoneNumberId = process.env.VAPI_PHONE_NUMBER_ID;
     
-    // Automatically discover the live Ngrok URL from the background daemon so the user never has to paste it
+    // Automatically discover the live Ngrok URL
     let ngrokUrl = process.env.VAPI_WEBHOOK_URL || 'https://muzzy-braden-civilly.ngrok-free.dev';
     try {
       const ngrokRes = await fetch('http://127.0.0.1:4040/api/tunnels');
@@ -39,9 +39,7 @@ router.post('/handoff', async (req, res) => {
         const httpsTunnel = data.tunnels?.find(t => t.public_url.startsWith('https'));
         if (httpsTunnel) ngrokUrl = httpsTunnel.public_url;
       }
-    } catch(e) { 
-      // Silently fall back to .env if Ngrok isn't running locally (e.g. on EC2 production)
-    }
+    } catch(e) { }
 
     const dynamicTools = require('../services/groq').tools.map(t => ({
       async: false,
@@ -57,8 +55,7 @@ router.post('/handoff', async (req, res) => {
       });
     }
 
-    // Call Vapi API to initiate outbound call
-    const vapiResponse = await fetch('https://api.vapi.ai/call/phone', {
+    const response = await fetch('https://api.vapi.ai/call/phone', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${vapiApiKey}`,
@@ -66,88 +63,60 @@ router.post('/handoff', async (req, res) => {
       },
       body: JSON.stringify({
         phoneNumberId: vapiPhoneNumberId,
-        assistantId: vapiAssistantId,
         customer: {
           number: formattedPhone,
-          name: patient ? `${patient.firstName} ${patient.lastName}` : 'Patient'
+          name: patient ? patient.firstName : 'Patient'
         },
+        assistantId: vapiAssistantId,
         assistantOverrides: {
-          firstMessageMode: "assistant-speaks-first",
-          firstMessage: `Hi ${patient?.firstName || 'there'}! This is Kyra from Kyron Medical Group. I'm continuing our conversation from the website. How can I help you?`,
           model: {
             provider: 'groq',
-            model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
-            messages: [{
-              role: "system",
-              content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: You are speaking to the patient over a live phone call right now! THERE IS NO SCREEN OR CHAT INTERFACE. The user CANNOT click buttons. Do NOT ask them to click anything. If you find appointment slots, read out 2 or 3 of them distinctly and concisely. When they choose, YOU MUST USE THE bookAppointment TOOL to finalize the booking yourself over the phone!'
-            }],
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+              {
+                role: 'system',
+                content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: This is a VOICE CALL. Be EXTREMELY CONCISE. Use very short sentences (under 15 words). Acknowledge the previous chat context briefly, then asking for the next step. Never list more than 2-3 options at once.'
+              }
+            ],
             tools: dynamicTools
           },
           variableValues: {
             chatContext: contextSummary || "No previous context. This is a new conversation.",
             patientName: patient ? patient.firstName : "Patient"
-          },
-          metadata: {
-            sessionId,
-            patientId
           }
         }
       })
     });
 
-    if (!vapiResponse.ok) {
-      const errorData = await vapiResponse.text();
-      console.error('Vapi API error:', errorData);
-      return res.status(500).json({ 
-        error: 'Failed to initiate call',
-        message: 'Unable to place the call right now. Please try again or call us directly at (215) 555-0100.'
-      });
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Vapi API error:', data);
+      return res.status(response.status).json(data);
     }
 
-    const callData = await vapiResponse.json();
-
-    res.json({
-      success: true,
-      callId: callData.id,
-      message: `Great! You'll receive a call at ${phoneNumber} shortly. Kyra will continue helping you from where we left off.`
-    });
+    res.json({ success: true, callId: data.id });
   } catch (error) {
-    console.error('Voice handoff error:', error);
-    res.status(500).json({ 
-      error: 'Failed to initiate voice call',
-      message: 'Unable to place the call right now. Please try again or call us directly at (215) 555-0100.'
-    });
+    console.error('Failed to initiate call:', error);
+    res.status(500).json({ error: 'Failed to initiate call' });
   }
 });
 
-// POST /api/voice/inbound - Handle inbound calls from Vapi (Assistant-Request Webhook)
-router.post('/inbound', (req, res) => {
-  try {
-    const payload = req.body;
-    
-    // Vapi calls this endpoint to get initial configuration
-    if (payload?.message?.type !== 'assistant-request') {
-      return res.json({}); 
+// POST /api/voice/inbound - Handle inbound call webhook from Vapi
+router.post('/inbound', async (req, res) => {
+  const payload = req.body;
+  
+  const defaultResponse = {
+    assistantOverrides: {
+      firstMessage: "Hi! You've reached Kyron Medical Group. How can I help you today?"
     }
+  };
 
+  if (payload.message?.type === 'assistant-request' || payload.message?.type === 'conversation-start') {
     const customerNumber = payload.message.call?.customer?.number;
-    
-    const defaultResponse = {
-      assistantOverrides: {
-        firstMessage: "Hi! You've reached Kyron Medical Group. How can I help you today?"
-      }
-    };
-
-    if (!customerNumber) {
-      return res.json(defaultResponse);
-    }
-
-    const { getPatientByPhone, getLatestSessionForPatient } = require('../data/store');
     const patient = getPatientByPhone(customerNumber);
 
-    if (!patient) {
-      return res.json(defaultResponse);
-    }
+    if (!patient) return res.json(defaultResponse);
 
     const session = getLatestSessionForPatient(patient.id);
     let contextSummary = '';
@@ -158,17 +127,27 @@ router.post('/inbound', (req, res) => {
 
     const hasContext = contextSummary.trim().length > 0;
     const pName = patient.firstName || 'there';
+    
     const greeting = hasContext 
-      ? "Hi " + pName + "! This is Kyra from Kyron Medical. I'm picking up right from where we left off. How can I continue helping you?"
-      : "Hi " + pName + "! This is Kyra from Kyron Medical Group. How can I help you today?";
+      ? `Hi ${pName}! This is Riley from Kyron Medical. I'm picking up from our chat. How can I help?`
+      : `Thank you for calling Kyron Medical Group. This is Riley, your scheduling assistant. How may I help you today?`;
 
-    // Dynamically derive the Webhook URL from the request host (Ngrok)
-    const hostUrl = 'https://' + req.get('host');
+    // Discover Ngrok URL
+    let ngrokUrl = process.env.VAPI_WEBHOOK_URL || 'https://muzzy-braden-civilly.ngrok-free.dev';
+    try {
+      const ngrokRes = await fetch('http://127.0.0.1:4040/api/tunnels');
+      if (ngrokRes.ok) {
+        const data = await ngrokRes.json();
+        const httpsTunnel = data.tunnels?.find(t => t.public_url.startsWith('https'));
+        if (httpsTunnel) ngrokUrl = httpsTunnel.public_url;
+      }
+    } catch(e) { }
+
     const dynamicTools = require('../services/groq').tools.map(t => ({
       async: false,
-      messages: [{ type: "request-start", content: "Let me check the database..." }],
+      messages: [{ type: "request-start", content: "Let me check the system..." }],
       ...t,
-      server: { url: hostUrl + '/api/voice/tool' }
+      server: { url: ngrokUrl + '/api/voice/tool' }
     }));
 
     return res.json({
@@ -176,76 +155,50 @@ router.post('/inbound', (req, res) => {
         firstMessage: greeting,
         model: {
           provider: 'groq',
-          model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
-          messages: [{
-            role: "system",
-            content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: You are speaking to the patient over a live phone call right now! THERE IS NO SCREEN OR CHAT INTERFACE. The user CANNOT click buttons. Do NOT ask them to click anything. If you find appointment slots, read out 2 or 3 of them distinctly and concisely. When they choose, YOU MUST USE THE bookAppointment TOOL to finalize the booking yourself over the phone!'
-          }],
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            {
+              role: 'system',
+              content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: This is a VOICE CALL. Be EXTREMELY CONCISE. Use very short sentences (under 15 words). Briefly acknowledge the chat history, then ask for the next step. Never list more than 2-3 options at once.'
+            }
+          ],
           tools: dynamicTools
         },
         variableValues: {
           chatContext: contextSummary || "No previous context. This is a new conversation.",
           patientName: pName
-        },
-        metadata: {
-          patientId: patient.id,
-          sessionId: session ? session.id : null
         }
       }
     });
-
-  } catch (error) {
-    console.error('Inbound voice error:', error);
-    res.json({});
   }
+
+  res.status(200).json({ ok: true });
 });
 
-// POST /api/voice/tool - Handle Vapi Tool Execution Webhooks
+// POST /api/voice/tool - Handle tool calls from Vapi
 router.post('/tool', async (req, res) => {
   try {
-    const { message } = req.body;
-    console.log('📞 VAPI TOOL WEBHOOK received. Type:', message?.type);
-    console.log('📞 VAPI payload keys:', JSON.stringify(Object.keys(message || {})));
+    const payload = req.body;
+    const { message } = payload;
 
-    const { handleFunctionCall } = require('../services/groq');
-    const { getPatientByPhone } = require('../data/store');
-    
-    const customerNumber = message?.call?.customer?.number;
-    const patientId = customerNumber ? getPatientByPhone(customerNumber)?.id : null;
-    
-    // Vapi uses different property names depending on tool configuration:
-    // - message.toolWithToolCallList  (server tools with metadata)
-    // - message.toolCallList          (basic tool calls)
-    const toolList = message?.toolWithToolCallList || message?.toolCallList || [];
+    if (message?.type === 'tool-call') {
+      const toolCall = message.toolCall;
+      const { name, arguments: args } = toolCall;
+      const customerNumber = message.call?.customer?.number;
+      console.log(`🔧 Voice tool call: ${name} from ${customerNumber}`);
+      
+      const patient = getPatientByPhone(customerNumber);
+      const patientId = patient ? patient.id : null;
+      console.log(`👤 Matched patient for voice: ${patient ? patient.firstName : 'NONE'} (ID: ${patientId})`);
 
-    if (toolList.length === 0) {
-      console.warn('⚠️ No tool calls found in Vapi payload:', JSON.stringify(message));
-      return res.json({ results: [] });
+      const result = require('../services/groq').handleFunctionCall(name, args, patientId);
+      
+      return res.status(200).json(result);
     }
-
-    const results = [];
-
-    for (const item of toolList) {
-      // Support both { toolCall: {...} } and direct { id, function: {...} } shapes
-      const toolCall = item.toolCall || item;
-      const name = toolCall.function?.name;
-      const rawArgs = toolCall.function?.arguments || '{}';
-      const args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;
-
-      console.log(`🤖 VAPI VOICE TOOL EXECUTION: ${name}`, args);
-      const executionResult = handleFunctionCall(name, args, patientId);
-      console.log(`✅ Tool result:`, JSON.stringify(executionResult).substring(0, 200));
-
-      results.push({
-        toolCallId: toolCall.id,
-        result: JSON.stringify(executionResult)
-      });
-    }
-
-    return res.json({ results });
-  } catch (err) {
-    console.error('Webhook execution error:', err);
-    return res.status(500).json({ error: 'Tool execution failed' });
+    res.status(400).json({ error: 'Not a tool call' });
+  } catch (error) {
+    console.error('Tool error:', error);
+    res.status(500).json({ error: 'Tool execution failed' });
   }
 });
 

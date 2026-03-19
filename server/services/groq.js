@@ -7,7 +7,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const MODEL_NAME = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 console.log(`🤖 Using Groq model: ${MODEL_NAME}`);
 
-const SYSTEM_PROMPT = `You are a friendly, professional AI medical receptionist for Kyron Medical Group. Your name is Kyra.
+const SYSTEM_PROMPT = `You are a friendly, professional AI medical receptionist for Kyron Medical Group. Your name is Riley.
 
 CRITICAL TOOL CALLING RULE (HIGHEST PRIORITY):
 You have access to JSON-based API tools. When you need to call a tool, you MUST use the native tool_calls API mechanism ONLY.
@@ -41,7 +41,8 @@ APPOINTMENT SCHEDULING WORKFLOW:
 8. Confirm the booking with all details
 
 RESPONSE STYLE:
-- Be warm, professional, and concise
+- Be warm, professional, and EXTREMELY CONCISE
+- For voice calls, use very short sentences (under 15 words) and limit each response to 1-2 sentences max.
 - Use a conversational tone, not robotic
 - When presenting time slots, format them clearly
 - Always confirm details before booking
@@ -305,7 +306,7 @@ async function chat(sessionMessages, patientId) {
             const fnArgs = JSON.parse(xmlMatch[2]);
             console.log(`🔧 Recovered XML tool call: ${fnName}`, fnArgs);
             const toolResult = handleFunctionCall(fnName, fnArgs, patientId);
-
+ 
             const recoveryMessages = [
               ...messages,
               { role: 'user', content: `[SYSTEM: Tool "${fnName}" executed and returned: ${JSON.stringify(toolResult)}. Now respond to the patient in plain conversational English based on this data. Do NOT output XML or call any tools.]` }

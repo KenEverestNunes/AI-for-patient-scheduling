@@ -22,7 +22,6 @@ export default function ChatInterface({ patientData, sessionId }) {
 
   const suggestionHints = [
     "📅 Schedule an appointment",
-    "💊 Check my prescription refill",
     "🏢 What are your office hours?",
     "👨‍⚕️ Do you have a dermatologist?"
   ]

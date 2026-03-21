@@ -17,28 +17,32 @@ async function sendAppointmentConfirmation({ patient, appointment }) {
     <html>
     <head>
       <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; color: #f1f5f9; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
-        .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 32px; }
-        .logo { text-align: center; margin-bottom: 24px; }
-        .logo h1 { color: #0ea5e9; font-size: 24px; margin: 0; }
-        .logo p { color: #94a3b8; font-size: 14px; margin: 4px 0 0; }
-        h2 { color: #0ea5e9; font-size: 20px; margin: 0 0 20px; }
-        .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
-        .detail-label { color: #94a3b8; font-size: 14px; }
-        .detail-value { color: #f1f5f9; font-size: 14px; font-weight: 600; }
-        .highlight { background: linear-gradient(135deg, rgba(14,165,233,0.15), rgba(6,182,212,0.1)); border: 1px solid rgba(14,165,233,0.2); border-radius: 12px; padding: 16px; margin: 20px 0; text-align: center; }
-        .highlight .date { font-size: 18px; font-weight: 700; color: #0ea5e9; }
-        .highlight .time { font-size: 14px; color: #94a3b8; margin-top: 4px; }
-        .footer { text-align: center; margin-top: 24px; color: #64748b; font-size: 12px; }
+        .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .logo-section { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 32px; }
+        .logo-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #0ea5e9, #06b6d4); display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0; }
+        h2 { color: #0ea5e9; font-size: 20px; margin: 0 0 20px; text-align: center; }
+        .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .detail-label { color: #64748b; font-size: 14px; }
+        .detail-value { color: #0f172a; font-size: 14px; font-weight: 600; }
+        .highlight { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 16px; margin: 24px 0; text-align: center; }
+        .highlight .date { font-size: 18px; font-weight: 700; color: #0284c7; }
+        .highlight .time { font-size: 14px; color: #64748b; margin-top: 4px; }
+        .footer { text-align: center; margin-top: 32px; color: #94a3b8; font-size: 12px; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="card">
-          <div class="logo">
-            <h1>⚕️ Kyron Medical Group</h1>
-            <p>Appointment Confirmation</p>
+          <div class="logo-section">
+            <div class="logo-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+            </div>
+            <h1 class="logo-text">Kyron Medical</h1>
           </div>
           
           <h2>Hi ${patient.firstName}! Your appointment is confirmed ✅</h2>
@@ -48,29 +52,36 @@ async function sendAppointmentConfirmation({ patient, appointment }) {
             <div class="time">${appointment.time}</div>
           </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Doctor</span><span class="detail-value">${appointment.doctorName}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Specialty</span><span class="detail-value">${appointment.specialty}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Reason</span><span class="detail-value">${appointment.reason}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Location</span><span class="detail-value">100 Medical Center Blvd, Philadelphia, PA 19103</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Contact</span><span class="detail-value">(215) 555-0100</span>
-          </div>
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px; border-collapse: collapse;">
+            <tr>
+              <td class="detail-label" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; width: 30%;">Doctor</td>
+              <td class="detail-value" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; text-align: right;">${appointment.doctorName}</td>
+            </tr>
+            <tr>
+              <td class="detail-label" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9;">Specialty</td>
+              <td class="detail-value" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; text-align: right;">${appointment.specialty}</td>
+            </tr>
+            <tr>
+              <td class="detail-label" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9;">Reason</td>
+              <td class="detail-value" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; text-align: right;">${appointment.reason}</td>
+            </tr>
+            <tr>
+              <td class="detail-label" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9;">Location</td>
+              <td class="detail-value" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; text-align: right;">100 Medical Center Blvd, Philadelphia, PA 19103</td>
+            </tr>
+            <tr>
+              <td class="detail-label" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9;">Contact</td>
+              <td class="detail-value" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; text-align: right;">(215) 555-0100</td>
+            </tr>
+          </table>
           
-          <div style="text-align: center; margin-top: 24px;">
-            <p style="color: #94a3b8; font-size: 13px;">Please arrive 15 minutes before your appointment.<br>Bring a valid photo ID and insurance card.</p>
+          <div style="text-align: center; margin-top: 32px;">
+            <p style="color: #64748b; font-size: 13px; line-height: 1.5;">Please arrive 15 minutes before your appointment.<br>Bring a valid photo ID and insurance card.</p>
           </div>
 
           <div class="footer">
             <p>Need to reschedule or cancel? Call us at (215) 555-0100</p>
-            <p>© 2025 Kyron Medical Group • Philadelphia, PA</p>
+            <p>© ${new Date().getFullYear()} Kyron Medical • Philadelphia, PA</p>
           </div>
         </div>
       </div>

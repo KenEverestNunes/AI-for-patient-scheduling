@@ -1,0 +1,565 @@
+{
+  "patients": [
+    {
+      "id": "patient-1774070073664",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-05",
+      "phone": "12676888038",
+      "email": "kn644@drexel.edu",
+      "reason": "skinn cleanup",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T05:14:33.664Z"
+    },
+    {
+      "id": "patient-1774074401838",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-09",
+      "phone": "12676888038",
+      "email": "kennunes77@gmail.com",
+      "reason": "knee pain",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T06:26:41.838Z"
+    },
+    {
+      "id": "patient-1774075267608",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-10",
+      "phone": "12676888038",
+      "email": "kennunes77@gmail.com",
+      "reason": "knee pain",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T06:41:07.608Z"
+    },
+    {
+      "id": "patient-1774076373347",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-10",
+      "phone": "12676888038",
+      "email": "kennunes77@gmail.com",
+      "reason": "knee pain",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T06:59:33.348Z"
+    },
+    {
+      "id": "patient-1774114537143",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-10",
+      "phone": "12676888038",
+      "email": "kennunes77@gmail.com",
+      "reason": "knee pain",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T17:35:37.143Z"
+    },
+    {
+      "id": "patient-1774115095975",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-16",
+      "phone": "12676888038",
+      "email": "kn644@drexel.edu",
+      "reason": "skinn cleanup",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T17:44:55.975Z"
+    },
+    {
+      "id": "patient-1774115268130",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-10",
+      "phone": "12676888038",
+      "email": "kennunes77@gmail.com",
+      "reason": "skinn cleanup",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T17:47:48.130Z"
+    },
+    {
+      "id": "patient-1774116953159",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-08",
+      "phone": "12676888038",
+      "email": "kn644@drexel.edu",
+      "reason": "",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T18:15:53.159Z"
+    },
+    {
+      "id": "patient-1774117827038",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-03",
+      "phone": "12676888038",
+      "email": "kn644@drexel.edu",
+      "reason": "",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T18:30:27.038Z"
+    },
+    {
+      "id": "patient-1774118332827",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-02",
+      "phone": "12676888038",
+      "email": "kn644@drexel.edu",
+      "reason": "skin",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T18:38:52.827Z"
+    },
+    {
+      "id": "patient-1774118479209",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-02",
+      "phone": "12676888038",
+      "email": "kennunes77@gmail.com",
+      "reason": "skin",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T18:41:19.209Z"
+    },
+    {
+      "id": "patient-1774118624112",
+      "firstName": "Ken",
+      "lastName": "Nunes",
+      "dob": "2026-03-10",
+      "phone": "12676888038",
+      "email": "kennunes77@gmail.com",
+      "reason": "skin",
+      "smsOptIn": false,
+      "createdAt": "2026-03-21T18:43:44.112Z"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "apt-1774114598614",
+      "slotId": "dr-chen-2026-03-23T14:30:00.000Z",
+      "patientId": "patient-1774114537143",
+      "doctorId": "dr-chen",
+      "doctorName": "Dr. Sarah Chen",
+      "specialty": "Orthopedics",
+      "dateTime": "2026-03-23T14:30:00.000Z",
+      "date": "Monday, March 23, 2026",
+      "time": "10:30 AM",
+      "reason": "knee pain issue",
+      "status": "confirmed",
+      "createdAt": "2026-03-21T17:36:38.614Z"
+    },
+    {
+      "id": "apt-1774115111346",
+      "slotId": "dr-chen-2026-03-23T13:00:00.000Z",
+      "patientId": "patient-1774115095975",
+      "doctorId": "dr-chen",
+      "doctorName": "Dr. Sarah Chen",
+      "specialty": "Orthopedics",
+      "dateTime": "2026-03-23T13:00:00.000Z",
+      "date": "Monday, March 23, 2026",
+      "time": "9:00 AM",
+      "reason": "knee pain",
+      "status": "confirmed",
+      "createdAt": "2026-03-21T17:45:11.346Z"
+    },
+    {
+      "id": "apt-1774118674177",
+      "slotId": "dr-patel-2026-03-23T13:00:00.000Z",
+      "patientId": "patient-1774118624112",
+      "doctorId": "dr-patel",
+      "doctorName": "Dr. Priya Patel",
+      "specialty": "Dermatology",
+      "dateTime": "2026-03-23T13:00:00.000Z",
+      "date": "Monday, March 23, 2026",
+      "time": "9:00 AM",
+      "reason": "skin consultation",
+      "status": "confirmed",
+      "createdAt": "2026-03-21T18:44:34.177Z"
+    }
+  ],
+  "chatSessions": {
+    "06651232-96c3-46ff-9276-a504f14c076e": {
+      "id": "06651232-96c3-46ff-9276-a504f14c076e",
+      "messages": [
+        {
+          "role": "user",
+          "content": "📅 Schedule an appointment",
+          "timestamp": "2026-03-21T06:27:00.767Z"
+        },
+        {
+          "role": "user",
+          "content": "hii",
+          "timestamp": "2026-03-21T06:27:32.186Z"
+        },
+        {
+          "role": "user",
+          "content": "hii",
+          "timestamp": "2026-03-21T06:28:21.767Z"
+        },
+        {
+          "role": "user",
+          "content": "hii",
+          "timestamp": "2026-03-21T06:36:46.308Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello. What brings you in today?",
+          "timestamp": "2026-03-21T06:36:47.030Z"
+        },
+        {
+          "role": "user",
+          "content": "hii my name is ken nunes and my hieght is 6'3 and weigth is 90 kg.i would like to aschedule a appoinment for my knee checkup",
+          "timestamp": "2026-03-21T06:37:35.277Z"
+        },
+        {
+          "role": "user",
+          "content": "hii my name is ken nunes and my hieght is 6'3 and weigth is 90 kg.i would like to aschedule a appoinment for my knee checkup",
+          "timestamp": "2026-03-21T06:37:46.258Z"
+        }
+      ],
+      "createdAt": "2026-03-21T06:27:00.765Z",
+      "patientId": "patient-1774074401838"
+    },
+    "test1234": {
+      "id": "test1234",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello",
+          "timestamp": "2026-03-21T06:34:16.122Z"
+        }
+      ],
+      "createdAt": "2026-03-21T06:34:16.121Z"
+    },
+    "c8cf106b-63af-4674-ab7d-a6bad318c818": {
+      "id": "c8cf106b-63af-4674-ab7d-a6bad318c818",
+      "messages": [
+        {
+          "role": "user",
+          "content": "👨‍⚕️ Do you have a dermatologist?",
+          "timestamp": "2026-03-21T06:41:12.353Z"
+        },
+        {
+          "role": "assistant",
+          "content": "We have Dr. Priya Patel for dermatology. I can help schedule an appointment if you'd like. What seems to be the concern with your skin?",
+          "timestamp": "2026-03-21T06:41:13.166Z"
+        },
+        {
+          "role": "user",
+          "content": "Hii my name is ken and my weight is 90 kg",
+          "timestamp": "2026-03-21T06:41:26.958Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Hi Ken, nice to meet you. I'd be happy to help you schedule an appointment. What brings you in today, is there a specific concern or body part you'd like to see a doctor about? <function=searchAvailabilities{\"bodyPart\": \"skin\"}</function>",
+          "timestamp": "2026-03-21T06:41:27.562Z"
+        },
+        {
+          "role": "user",
+          "content": "I would like to schedule an appoinment with a skin doctor",
+          "timestamp": "2026-03-21T06:42:01.875Z"
+        },
+        {
+          "role": "assistant",
+          "content": "I'd be happy to help you schedule an appointment with Dr. Priya Patel, our dermatologist. Let me check her availability. <function=searchAvailabilities{\"bodyPart\": \"skin\"}</function>",
+          "timestamp": "2026-03-21T06:42:02.377Z"
+        }
+      ],
+      "createdAt": "2026-03-21T06:41:12.352Z",
+      "patientId": "patient-1774075267608"
+    },
+    "d70d139f-6732-4a1c-95bf-c0e53af8dea9": {
+      "id": "d70d139f-6732-4a1c-95bf-c0e53af8dea9",
+      "messages": [
+        {
+          "role": "user",
+          "content": "📅 Schedule an appointment",
+          "timestamp": "2026-03-21T06:59:35.079Z"
+        },
+        {
+          "role": "assistant",
+          "content": "What seems to be the reason for your visit today? Which part of your body is bothering you or what condition are you looking to get treated for?",
+          "timestamp": "2026-03-21T06:59:35.713Z"
+        },
+        {
+          "role": "user",
+          "content": "knee pain",
+          "timestamp": "2026-03-21T06:59:41.179Z"
+        },
+        {
+          "role": "assistant",
+          "content": "I've found some availability for you with Dr. Sarah Chen, our orthopedic specialist. We have the following time slots available: \n9:00 AM, \n9:30 AM, \n10:00 AM, \n10:30 AM, \n11:00 AM. \nAll of these are on Monday, March 23, 2026. Which one works best for you?",
+          "timestamp": "2026-03-21T06:59:42.040Z"
+        },
+        {
+          "role": "user",
+          "content": "9 works",
+          "timestamp": "2026-03-21T06:59:50.744Z"
+        },
+        {
+          "role": "assistant",
+          "content": "I've booked an appointment with Dr. Sarah Chen for 9:00 AM on Monday. You should receive a confirmation email with all the details. If you have any questions or need further assistance, feel free to ask.",
+          "timestamp": "2026-03-21T06:59:51.825Z"
+        }
+      ],
+      "createdAt": "2026-03-21T06:59:35.078Z",
+      "patientId": "patient-1774076373347"
+    },
+    "ef571094-40dd-4582-86de-3b64edd3e014": {
+      "id": "ef571094-40dd-4582-86de-3b64edd3e014",
+      "messages": [
+        {
+          "role": "user",
+          "content": "📅 Schedule an appointment",
+          "timestamp": "2026-03-21T17:35:39.361Z"
+        },
+        {
+          "role": "assistant",
+          "content": "To schedule an appointment, what part of the body or condition do you need treatment for (e.g. knee, heart, skin)?",
+          "timestamp": "2026-03-21T17:35:40.023Z"
+        },
+        {
+          "role": "user",
+          "content": "knee pain issue",
+          "timestamp": "2026-03-21T17:36:18.284Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Dr. Sarah Chen, our orthopedic specialist, has availability on Monday, March 23. You can choose from 9:00 AM, 9:30 AM, 10:00 AM, 10:30 AM, or 11:00 AM. Which time works best for you?",
+          "timestamp": "2026-03-21T17:36:19.209Z"
+        },
+        {
+          "role": "user",
+          "content": "yes 10:30 sounds good",
+          "timestamp": "2026-03-21T17:36:36.865Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Your appointment with Dr. Sarah Chen is confirmed for Monday, March 23, at 10:30 AM. A confirmation email will be sent to you. Goodbye.",
+          "timestamp": "2026-03-21T17:36:39.092Z"
+        }
+      ],
+      "createdAt": "2026-03-21T17:35:39.359Z",
+      "patientId": "patient-1774114537143"
+    },
+    "61f514d6-3f4d-4c52-b74c-6f769436cc29": {
+      "id": "61f514d6-3f4d-4c52-b74c-6f769436cc29",
+      "messages": [
+        {
+          "role": "user",
+          "content": "📅 Schedule an appointment",
+          "timestamp": "2026-03-21T17:44:57.779Z"
+        },
+        {
+          "role": "assistant",
+          "content": "What seems to be the reason for your visit today? Which part of your body is bothering you or what condition would you like to get treated?",
+          "timestamp": "2026-03-21T17:44:58.418Z"
+        },
+        {
+          "role": "user",
+          "content": "knee pain",
+          "timestamp": "2026-03-21T17:45:02.681Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Dr. Sarah Chen, our orthopedic specialist, has openings on Monday, March 23. We have 9:00 AM, 9:30 AM, 10:00 AM, 11:00 AM, and 11:30 AM available. Which time works best for you?",
+          "timestamp": "2026-03-21T17:45:03.600Z"
+        },
+        {
+          "role": "user",
+          "content": "9:00 am",
+          "timestamp": "2026-03-21T17:45:09.160Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Your appointment with Dr. Sarah Chen is scheduled for Monday, March 23 at 9:00 AM. A confirmation email will be sent to you shortly. Goodbye.",
+          "timestamp": "2026-03-21T17:45:12.006Z"
+        }
+      ],
+      "createdAt": "2026-03-21T17:44:57.777Z",
+      "patientId": "patient-1774115095975"
+    },
+    "2bf17009-ac7e-47d9-8188-2f21a86e1ea0": {
+      "id": "2bf17009-ac7e-47d9-8188-2f21a86e1ea0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hii my name is ken and I want to book an appoinment.my height is 6'3 and weight is 90kg",
+          "timestamp": "2026-03-21T17:48:25.519Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello Ken, nice to meet you. I'd be happy to help you book an appointment. Can you please tell me what brings you in today? What part of your body or condition would you like to see a doctor about?",
+          "timestamp": "2026-03-21T17:48:26.269Z"
+        }
+      ],
+      "createdAt": "2026-03-21T17:48:25.518Z",
+      "patientId": "patient-1774115268130"
+    },
+    "5221b421-4032-4d78-8ab5-48a60ce62585": {
+      "id": "5221b421-4032-4d78-8ab5-48a60ce62585",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hii my name is Ken and my height is 6'3 and my weight is 90 kg.",
+          "timestamp": "2026-03-21T18:16:28.570Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello Ken, nice to meet you. How can I help you with scheduling an appointment at Kyron Medical Group today?",
+          "timestamp": "2026-03-21T18:16:29.289Z"
+        },
+        {
+          "role": "user",
+          "content": "can we book an appoinment for my knee pain",
+          "timestamp": "2026-03-21T18:16:41.797Z"
+        },
+        {
+          "role": "assistant",
+          "content": "I've found some available time slots with Dr. Sarah Chen, our orthopedic specialist. We have openings on Monday, March 23, at 9:30 AM, 10:00 AM, 11:00 AM, 11:30 AM, and 1:00 PM. Which one of these times works best for you, Ken?",
+          "timestamp": "2026-03-21T18:16:42.701Z"
+        }
+      ],
+      "createdAt": "2026-03-21T18:16:28.569Z",
+      "patientId": "patient-1774116953159"
+    },
+    "312e3f5f-7813-4eab-851b-348f392bd7ff": {
+      "id": "312e3f5f-7813-4eab-851b-348f392bd7ff",
+      "messages": [
+        {
+          "role": "user",
+          "content": "🏢 What are your office hours?",
+          "timestamp": "2026-03-21T18:30:32.378Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Our office hours are Monday-Friday, 8:00 AM - 5:00 PM.",
+          "timestamp": "2026-03-21T18:30:32.833Z"
+        },
+        {
+          "role": "user",
+          "content": "Hii my name is ken and height is 6'3 and weight is 90 kg",
+          "timestamp": "2026-03-21T18:30:59.419Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello Ken, nice to meet you. How can I assist you today at Kyron Medical Group?",
+          "timestamp": "2026-03-21T18:30:59.738Z"
+        },
+        {
+          "role": "user",
+          "content": "I would like to book an appoinment with a knee doctor",
+          "timestamp": "2026-03-21T18:31:37.790Z"
+        },
+        {
+          "role": "assistant",
+          "content": "I'm experiencing high demand right now. Please try again in a moment, or call our office at (215) 555-0100.",
+          "timestamp": "2026-03-21T18:31:38.107Z"
+        },
+        {
+          "role": "user",
+          "content": "I would like to book an appoinment with a knee doctor",
+          "timestamp": "2026-03-21T18:31:52.722Z"
+        },
+        {
+          "role": "assistant",
+          "content": "We have several availability slots with Dr. Sarah Chen, our orthopedic specialist. Here are the options:\n- Monday, March 23, 2026, at 9:30 AM\n- Monday, March 23, 2026, at 10:00 AM\n- Monday, March 23, 2026, at 11:00 AM\n- Monday, March 23, 2026, at 11:30 AM\n- Monday, March 23, 2026, at 1:00 PM\n\nWhich one of these time slots works best for you, Ken?",
+          "timestamp": "2026-03-21T18:31:53.694Z"
+        }
+      ],
+      "createdAt": "2026-03-21T18:30:32.376Z",
+      "patientId": "patient-1774117827038"
+    },
+    "8cc4d68b-47b8-4f6b-8cb7-4ba30fb20092": {
+      "id": "8cc4d68b-47b8-4f6b-8cb7-4ba30fb20092",
+      "messages": [
+        {
+          "role": "user",
+          "content": "👨‍⚕️ Do you have a dermatologist?",
+          "timestamp": "2026-03-21T18:39:01.498Z"
+        },
+        {
+          "role": "assistant",
+          "content": "We have Dr. Priya Patel for dermatology. <function=searchAvailabilities>{\"bodyPart\": \"skin\", \"preferredDay\": \"\", \"preferredTimeRange\": \"\"}</function>",
+          "timestamp": "2026-03-21T18:39:02.300Z"
+        }
+      ],
+      "createdAt": "2026-03-21T18:39:01.497Z",
+      "patientId": "patient-1774118332827"
+    },
+    "c2706667-ed1e-428e-8b5e-41467d5a9fbd": {
+      "id": "c2706667-ed1e-428e-8b5e-41467d5a9fbd",
+      "messages": [
+        {
+          "role": "user",
+          "content": "👨‍⚕️ Do you have a dermatologist?",
+          "timestamp": "2026-03-21T18:41:24.300Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Yes, we have Dr. Priya Patel for skin concerns.",
+          "timestamp": "2026-03-21T18:41:24.865Z"
+        },
+        {
+          "role": "user",
+          "content": "I would like to book an appoinment with a dermatologist",
+          "timestamp": "2026-03-21T18:41:53.343Z"
+        },
+        {
+          "role": "assistant",
+          "content": "I'm experiencing high demand right now. Please try again in a moment, or call our office at (215) 555-0100.",
+          "timestamp": "2026-03-21T18:41:53.921Z"
+        }
+      ],
+      "createdAt": "2026-03-21T18:41:24.297Z",
+      "patientId": "patient-1774118479209"
+    },
+    "4361a8e9-0944-4aac-a8c9-ad97cdb1a34c": {
+      "id": "4361a8e9-0944-4aac-a8c9-ad97cdb1a34c",
+      "messages": [
+        {
+          "role": "user",
+          "content": "🏢 What are your office hours?",
+          "timestamp": "2026-03-21T18:43:48.426Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Our office hours are Monday through Friday, 8:00 AM to 5:00 PM.",
+          "timestamp": "2026-03-21T18:43:49.474Z"
+        },
+        {
+          "role": "user",
+          "content": "do you have a dermatologist",
+          "timestamp": "2026-03-21T18:44:06.821Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Yes, we have a dermatologist, Dr. Priya Patel. Would you like to schedule an appointment with her?",
+          "timestamp": "2026-03-21T18:44:07.691Z"
+        },
+        {
+          "role": "user",
+          "content": "can you book an appoinment with here",
+          "timestamp": "2026-03-21T18:44:22.700Z"
+        },
+        {
+          "role": "assistant",
+          "content": "We have found 5 available slots with Dr. Priya Patel. Here are the options:\n1. Monday, March 23, 2026, at 9:00 AM\n2. Monday, March 23, 2026, at 9:30 AM\n3. Monday, March 23, 2026, at 10:00 AM\n4. Monday, March 23, 2026, at 10:30 AM\n5. Monday, March 23, 2026, at 11:00 AM\n\nWhich one would you like to book?",
+          "timestamp": "2026-03-21T18:44:23.660Z"
+        },
+        {
+          "role": "user",
+          "content": "monday 9:00 AM",
+          "timestamp": "2026-03-21T18:44:32.751Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Your appointment with Dr. Priya Patel is booked for Monday at 9:00 AM. You will receive a confirmation email. Goodbye.",
+          "timestamp": "2026-03-21T18:44:34.534Z"
+        }
+      ],
+      "createdAt": "2026-03-21T18:43:48.424Z",
+      "patientId": "patient-1774118624112"
+    }
+  }
+}

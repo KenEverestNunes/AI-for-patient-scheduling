@@ -8,7 +8,7 @@ export default function ChatInterface({ patientData, sessionId }) {
       role: 'assistant',
       content: `Hi ${patientData?.firstName || 'there'}! 👋 I'm Kyra, your AI assistant at Kyron Medical Group. ${
         patientData?.reason 
-          ? `I see you're here about "${patientData.reason}". Let me help you find the right specialist and schedule an appointment!` 
+          ? `I see you're here about "**${patientData.reason}**". Let me help you find the right specialist and schedule an appointment!` 
           : `How can I help you today? I can help you schedule appointments, check prescription refills, or answer questions about our offices.`
       }`
     }
@@ -45,7 +45,7 @@ export default function ChatInterface({ patientData, sessionId }) {
     if (!userMessage || loading) return
 
     if (!customText) setInput('')
-    else setInput('') // Clear input just in case
+    else setInput('')
     setMessages(prev => [...prev, { role: 'user', content: userMessage }])
     setLoading(true)
 
@@ -112,64 +112,54 @@ export default function ChatInterface({ patientData, sessionId }) {
     }, 3000)
   }
 
-  // Format message content with basic markdown-like support
   const formatMessage = (content) => {
-    // Split by newlines and handle basic formatting
     return content.split('\n').map((line, i) => {
-      // Bold text
-      line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // Bullet points
+      line = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
       if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
-        return <div key={i} className="ml-4 flex gap-2"><span>•</span><span dangerouslySetInnerHTML={{ __html: line.replace(/^[-•]\s*/, '') }} /></div>
+        return <div key={i} className="ml-5 flex gap-3 my-1"><span className="text-sky-400">•</span><span dangerouslySetInnerHTML={{ __html: line.replace(/^[-•]\s*/, '') }} /></div>
       }
-      // Numbered items
       const numMatch = line.match(/^(\d+)\.\s(.+)/)
       if (numMatch) {
-        return <div key={i} className="ml-4 flex gap-2"><span className="text-sky-400 font-medium">{numMatch[1]}.</span><span dangerouslySetInnerHTML={{ __html: numMatch[2] }} /></div>
+        return <div key={i} className="ml-5 flex gap-3 my-1"><span className="text-sky-400 font-bold">{numMatch[1]}.</span><span dangerouslySetInnerHTML={{ __html: numMatch[2] }} /></div>
       }
-      return <p key={i} className={line.trim() === '' ? 'h-2' : ''} dangerouslySetInnerHTML={{ __html: line }} />
+      return <p key={i} className={line.trim() === '' ? 'h-3' : 'mb-2 last:mb-0'} dangerouslySetInnerHTML={{ __html: line }} />
     })
   }
 
   return (
-    <div className="min-h-screen flex flex-col page-enter">
-      {/* Header */}
-      <header className="sticky top-0 z-20 backdrop-blur-xl bg-slate-900/70 border-b border-white/5 py-1">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-400 flex items-center justify-center">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <div className="min-h-screen flex flex-col page-enter bg-slate-900/40">
+      <header className="sticky top-0 z-20 backdrop-blur-2xl bg-slate-900/80 border-b border-white/10 py-3 shadow-lg">
+        <div className="w-full px-6 md:px-10 flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-cyan-400 flex items-center justify-center shadow-md shadow-sky-500/20">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
               </svg>
             </div>
             <div>
-              <h1 className="text-sm font-semibold text-white">Kyra • AI Assistant</h1>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs text-slate-400">Online</span>
+              <h1 className="text-base font-bold text-white tracking-wide">Kyra • AI Assistant</h1>
+              <div className="flex items-center gap-2 mt-0.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                <span className="text-sm font-medium text-slate-400">Online</span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* Voice call button */}
-            <button
-              onClick={() => setShowCallModal(true)}
-              className="btn-call flex items-center gap-2 text-sm py-2 px-4"
-              id="voice-call-btn"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              Call Me
-            </button>
-          </div>
+          <button
+            onClick={() => setShowCallModal(true)}
+            className="btn-call flex items-center gap-2.5 text-base py-2.5 px-6 shadow-lg shadow-emerald-500/20 cursor-pointer"
+            id="voice-call-btn"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            Call Me Instead
+          </button>
         </div>
       </header>
 
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto pb-40">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+      <div className="flex-1 overflow-y-auto pb-48">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 py-10 space-y-8">
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -177,34 +167,33 @@ export default function ChatInterface({ patientData, sessionId }) {
             >
               <div className={`max-w-[85%] md:max-w-[75%] ${
                 msg.role === 'user'
-                  ? 'bg-gradient-to-br from-sky-500/90 to-cyan-500/90 text-white rounded-2xl rounded-br-md'
-                  : 'glass-card text-slate-200 rounded-2xl rounded-bl-md'
-              } px-4 py-3`}>
+                  ? 'bg-gradient-to-br from-sky-500 to-cyan-500 text-white rounded-[1.5rem] rounded-br-md shadow-lg shadow-sky-500/20'
+                  : 'glass-card text-slate-200 rounded-[1.5rem] rounded-bl-md border-white/10 shadow-lg bg-slate-800/80 backdrop-blur-xl'
+              } px-6 py-4.5`}>
                 {msg.role === 'assistant' && (
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <div className="w-5 h-5 rounded-md bg-gradient-to-br from-sky-500 to-cyan-400 flex items-center justify-center">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <div className="flex items-center gap-2.5 mb-3 border-b border-white/5 pb-2">
+                    <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-sky-500 to-cyan-400 flex items-center justify-center">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                       </svg>
                     </div>
-                    <span className="text-xs font-medium text-sky-400">Kyra</span>
+                    <span className="text-sm font-bold text-sky-400 tracking-wide">Kyra</span>
                   </div>
                 )}
-                <div className="text-sm leading-relaxed space-y-1">
+                <div className="text-[15px] md:text-base leading-relaxed space-y-1">
                   {formatMessage(msg.content)}
                 </div>
               </div>
             </div>
           ))}
 
-          {/* Suggested Prompts Grid */}
           {messages.length === 1 && !loading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12 mb-8 message-enter">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-14 mb-8 message-enter">
               {suggestionHints.map((hint, i) => (
                 <button
                   key={i}
                   onClick={() => sendMessage(null, hint)}
-                  className="glass-card text-left p-4 rounded-xl text-sm text-slate-300 transition-all border border-white/5 hover:border-sky-500/30 hover:bg-white/5 hover:-translate-y-0.5"
+                  className="glass-card text-left p-5 rounded-2xl text-sm font-medium text-slate-300 transition-all border border-white/5 hover:border-sky-500/40 hover:bg-white/10 hover:-translate-y-1 shadow-md hover:shadow-sky-500/10"
                 >
                   {hint}
                 </button>
@@ -212,19 +201,18 @@ export default function ChatInterface({ patientData, sessionId }) {
             </div>
           )}
 
-          {/* Typing indicator */}
           {loading && (
             <div className="flex justify-start message-enter">
-              <div className="glass-card px-4 py-3 rounded-2xl rounded-bl-md">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-5 h-5 rounded-md bg-gradient-to-br from-sky-500 to-cyan-400 flex items-center justify-center">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <div className="glass-card px-6 py-5 rounded-[1.5rem] rounded-bl-md bg-slate-800/80 border-white/10">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-sky-500 to-cyan-400 flex items-center justify-center">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                     </svg>
                   </div>
-                  <span className="text-xs font-medium text-sky-400">Kyra</span>
+                  <span className="text-sm font-bold text-sky-400">Kyra</span>
                 </div>
-                <div className="typing-indicator">
+                <div className="typing-indicator px-2">
                   <div className="typing-dot" />
                   <div className="typing-dot" />
                   <div className="typing-dot" />
@@ -237,26 +225,25 @@ export default function ChatInterface({ patientData, sessionId }) {
         </div>
       </div>
 
-      {/* Input area */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 backdrop-blur-xl bg-slate-900/80 border-t border-white/5 pb-safe">
-        <form onSubmit={sendMessage} className="max-w-4xl mx-auto px-4 sm:px-6 py-5 flex gap-4">
+      <div className="fixed bottom-0 left-0 right-0 z-20 backdrop-blur-2xl bg-slate-900/90 border-t border-white/10 pb-safe pt-4 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+        <form onSubmit={sendMessage} className="max-w-5xl mx-auto px-6 sm:px-8 pb-6 flex gap-4">
           <input
             ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            className="glass-input flex-1 py-4 text-base"
+            placeholder="Type your message here..."
+            className="glass-input flex-1 py-4 px-6 text-base md:text-lg rounded-2xl bg-white/5 focus:bg-white/10 border-white/10"
             disabled={loading}
             id="chat-input"
           />
           <button
             type="submit"
             disabled={!input.trim() || loading}
-            className="btn-primary px-8 flex items-center justify-center rounded-xl"
+            className="btn-primary px-8 flex items-center justify-center rounded-2xl disabled:opacity-50 disabled:hover:transform-none"
             id="chat-send-btn"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="22" y1="2" x2="11" y2="13" />
               <polygon points="22 2 15 22 11 13 2 9 22 2" />
             </svg>
@@ -264,57 +251,50 @@ export default function ChatInterface({ patientData, sessionId }) {
         </form>
       </div>
 
-      {/* Voice call modal */}
       {showCallModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !callStatus && setShowCallModal(false)} />
-          <div className="glass-card relative p-8 max-w-sm w-full text-center page-enter">
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => !callStatus && setShowCallModal(false)} />
+          <div className="glass-card relative p-10 max-w-md w-full text-center page-enter border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.6)] rounded-[2rem]">
             {!callStatus && (
               <>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Continue by Phone</h3>
-                <p className="text-sm text-slate-400 mb-6">
-                  Kyra will call you at <span className="text-white font-medium">{patientData?.phone}</span> and continue the conversation from where we left off.
+                <h3 className="text-2xl font-extrabold text-white mb-3">Continue by Phone</h3>
+                <p className="text-base text-slate-400 mb-8 leading-relaxed">
+                  Kyra will call you at <span className="text-white font-bold">{patientData?.phone}</span> and continue the conversation from where we left off.
                 </p>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowCallModal(false)}
-                    className="btn-secondary flex-1"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleVoiceCall}
-                    className="btn-call flex-1"
-                  >
-                    📞 Call Me Now
+                <div className="flex gap-4">
+                  <button onClick={() => setShowCallModal(false)} className="btn-secondary flex-1 py-4 text-base font-bold rounded-xl">Cancel</button>
+                  <button onClick={handleVoiceCall} className="btn-call flex-1 py-4 text-base font-bold rounded-xl flex items-center justify-center gap-2">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+                    Call Me Now
                   </button>
                 </div>
               </>
             )}
+            {/* Keeping the loading/success states the same logic, just matching the new styling if they trigger */}
             {callStatus === 'calling' && (
-              <div>
-                <div className="spinner mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-white mb-2">Connecting...</h3>
-                <p className="text-sm text-slate-400">Placing your call now</p>
+              <div className="py-6">
+                <div className="spinner mx-auto mb-6 w-12 h-12 border-4 border-sky-500/20 border-t-sky-400" />
+                <h3 className="text-xl font-bold text-white mb-2">Connecting...</h3>
+                <p className="text-base text-slate-400">Placing your call now</p>
               </div>
             )}
             {callStatus === 'success' && (
-              <div>
-                <div className="text-4xl mb-4">✅</div>
-                <h3 className="text-lg font-semibold text-white mb-2">Call Initiated!</h3>
-                <p className="text-sm text-slate-400">You'll receive a call shortly</p>
+              <div className="py-6">
+                <div className="text-6xl mb-6 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]">✅</div>
+                <h3 className="text-xl font-bold text-white mb-2">Call Initiated!</h3>
+                <p className="text-base text-slate-400">You'll receive a call shortly</p>
               </div>
             )}
             {callStatus === 'error' && (
-              <div>
-                <div className="text-4xl mb-4">❌</div>
-                <h3 className="text-lg font-semibold text-white mb-2">Call Failed</h3>
-                <p className="text-sm text-slate-400">Please try again or call (215) 555-0100</p>
+              <div className="py-6">
+                <div className="text-6xl mb-6 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">❌</div>
+                <h3 className="text-xl font-bold text-white mb-2">Call Failed</h3>
+                <p className="text-base text-slate-400">Please try again or call (215) 555-0100</p>
               </div>
             )}
           </div>

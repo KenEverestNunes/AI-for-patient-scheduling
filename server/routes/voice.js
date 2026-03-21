@@ -45,7 +45,7 @@ router.post('/handoff', async (req, res) => {
       async: false,
       messages: [{ type: "request-start", content: "Let me check the system..." }],
       ...t,
-      server: { url: ngrokUrl + '/api/voice/tool' }
+      server: { url: ngrokUrl + '/api/voice/tool?patientId=' + (patientId || '') }
     }));
 
     if (!vapiApiKey || !vapiAssistantId || !vapiPhoneNumberId) {
@@ -69,13 +69,14 @@ router.post('/handoff', async (req, res) => {
         },
         assistantId: vapiAssistantId,
         assistantOverrides: {
+          endCallPhrases: ["Goodbye.", "Goodbye!"],
           model: {
             provider: 'groq',
             model: 'llama-3.3-70b-versatile',
             messages: [
               {
                 role: 'system',
-                content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: This is a VOICE CALL. Be EXTREMELY CONCISE. Use very short sentences (under 15 words). Acknowledge the previous chat context briefly, then asking for the next step. Never list more than 2-3 options at once.'
+                content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: This is a VOICE CALL. Be EXTREMELY CONCISE. Use very short sentences (under 15 words). Acknowledge the previous chat context briefly, then asking for the next step. Never list more than 2-3 options at once.\n\nPATIENT NAME: {{patientName}}\nPREVIOUS CHAT CONTEXT:\n{{chatContext}}'
               }
             ],
             tools: dynamicTools
@@ -147,11 +148,12 @@ router.post('/inbound', async (req, res) => {
       async: false,
       messages: [{ type: "request-start", content: "Let me check the system..." }],
       ...t,
-      server: { url: ngrokUrl + '/api/voice/tool' }
+      server: { url: ngrokUrl + '/api/voice/tool?patientId=' + (patient ? patient.id : '') }
     }));
 
     return res.json({
       assistantOverrides: {
+        endCallPhrases: ["Goodbye.", "Goodbye!"],
         firstMessage: greeting,
         model: {
           provider: 'groq',
@@ -159,7 +161,7 @@ router.post('/inbound', async (req, res) => {
           messages: [
             {
               role: 'system',
-              content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: This is a VOICE CALL. Be EXTREMELY CONCISE. Use very short sentences (under 15 words). Briefly acknowledge the chat history, then ask for the next step. Never list more than 2-3 options at once.'
+              content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: This is a VOICE CALL. Be EXTREMELY CONCISE. Use very short sentences (under 15 words). Briefly acknowledge the chat history, then ask for the next step. Never list more than 2-3 options at once.\n\nPATIENT NAME: {{patientName}}\nPREVIOUS CHAT CONTEXT:\n{{chatContext}}'
             }
           ],
           tools: dynamicTools
@@ -181,16 +183,42 @@ router.post('/tool', async (req, res) => {
     const payload = req.body;
     const { message } = payload;
 
-    if (message?.type === 'tool-call') {
+    let patientId = req.query.patientId;
+    let customerNumber = message?.call?.customer?.number || payload.call?.customer?.number;
+    
+    // Fallback patient matching
+    if (!patientId && customerNumber) {
+      const patient = getPatientByPhone(customerNumber);
+      patientId = patient ? patient.id : null;
+    }
+
+    if (message?.type === 'tool-calls' && Array.isArray(message.toolCallList)) {
+      const results = [];
+      
+      for (const toolCall of message.toolCallList) {
+        const name = toolCall.function?.name || toolCall.name;
+        const argsRaw = toolCall.function?.arguments || toolCall.arguments;
+        
+        let args = argsRaw;
+        if (typeof argsRaw === 'string') {
+          try { args = JSON.parse(argsRaw); } catch (e) { args = {}; }
+        }
+
+        console.log(`🔧 Voice tool-calls: ${name} | Patient ID: ${patientId}`);
+        const result = require('../services/groq').handleFunctionCall(name, args, patientId);
+        
+        results.push({
+          toolCallId: toolCall.id,
+          result: result
+        });
+      }
+      
+      return res.status(200).json({ results });
+    } else if (message?.type === 'tool-call') {
       const toolCall = message.toolCall;
       const { name, arguments: args } = toolCall;
-      const customerNumber = message.call?.customer?.number;
-      console.log(`🔧 Voice tool call: ${name} from ${customerNumber}`);
       
-      const patient = getPatientByPhone(customerNumber);
-      const patientId = patient ? patient.id : null;
-      console.log(`👤 Matched patient for voice: ${patient ? patient.firstName : 'NONE'} (ID: ${patientId})`);
-
+      console.log(`🔧 Voice tool-call (legacy): ${name} | Patient ID: ${patientId}`);
       const result = require('../services/groq').handleFunctionCall(name, args, patientId);
       
       return res.status(200).json(result);

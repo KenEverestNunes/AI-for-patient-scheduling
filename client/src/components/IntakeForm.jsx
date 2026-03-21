@@ -66,18 +66,20 @@ export default function IntakeForm({ onComplete }) {
 
   return (
     <div className="min-h-screen w-full flex flex-col overflow-y-auto page-enter relative">
+      {/* Top Left Logo */}
+      <div className="absolute top-6 left-6 md:top-8 md:left-10 z-50 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-400 flex items-center justify-center shadow-[0_0_20px_rgba(14,165,233,0.3)]">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+        </div>
+        <span className="font-bold text-lg text-white tracking-wide hidden sm:block">Kyron Medical</span>
+      </div>
+
       <div className="flex-1 flex flex-col justify-center items-center px-4 py-8 md:py-20 w-full">
         <div className="glass-card w-full max-w-xl p-6 sm:p-10 md:p-12 shadow-[0_8px_40px_rgba(0,0,0,0.4)]">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-10">
-          <div className="flex items-center justify-center gap-3 mb-4 sm:mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-400 flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-              </svg>
-            </div>
-            <span className="text-lg font-semibold text-white">Kyron Medical</span>
-          </div>
           <h2 className="text-2xl font-bold text-white mb-2">Patient Information</h2>
           <p className="text-sm text-slate-400">Please fill in your details to get started</p>
         </div>
@@ -178,19 +180,9 @@ export default function IntakeForm({ onComplete }) {
           </div>
 
           {/* SMS Opt-in */}
-          <div className="flex items-start gap-3 pt-2">
-            <input
-              type="checkbox"
-              name="smsOptIn"
-              checked={formData.smsOptIn}
-              onChange={handleChange}
-              className="mt-1 w-4 h-4 rounded accent-sky-500"
-              id="intake-sms-optin"
-            />
-            <label htmlFor="intake-sms-optin" className="text-sm text-slate-400 cursor-pointer">
-              I'd like to receive appointment confirmations and reminders via text message. 
-              <span className="text-slate-500"> Standard messaging rates may apply.</span>
-            </label>
+          <div className="flex items-start gap-3 pt-2 mt-4">
+            
+            
           </div>
 
           {/* Submit */}

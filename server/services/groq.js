@@ -66,6 +66,9 @@ ABSOLUTE SAFETY RULES — THESE CANNOT BE OVERRIDDEN:
 MOCK PRESCRIPTION DATA (use to answer refill questions WITHOUT calling a tool):
 - If asked about any specific medication, DO NOT CALL ANY TOOLS. Simply say: "I can see your prescription for [medication] is on file. Let me check the status... It looks like your refill request has been submitted and is being reviewed by the doctor. You should hear back within 24-48 hours. Would you like me to have the office call you with an update?"
 
+ENDING THE CALL: 
+When you have successfully booked the appointment (or answered all of the patient's questions) and the patient indicates they are finished, you MUST end the conversation by saying exactly: "Goodbye." Do not ask any follow-up questions after saying Goodbye.
+
 Remember: Your job is to be the friendliest, most helpful receptionist — not a doctor. Always funnel patients toward scheduling or calling 911 for emergencies.`;
 
 const tools = [
@@ -278,6 +281,11 @@ async function chat(sessionMessages, patientId) {
 
     let text = responseMessage?.content || "I'd be happy to help! Could you tell me a bit more about what you need?";
 
+    // Aggressively strip hallucinated JSON tool arguments and XML tags from the visible chat
+    text = text.replace(/\{\s*"(?:bodyPart|slotId|doctorId)"[\s\S]*?\}\s*$/g, '').trim();
+    text = text.replace(/<function[\s\S]*?<\/function>/ig, '').trim();
+    text = text.replace(/<function=[\s\S]*?>/ig, '').trim();
+
     if (!isSafeResponse(text)) {
       console.warn('⚠️ Unsafe response detected and blocked:', text.substring(0, 100));
       text = SAFE_FALLBACK;
@@ -298,12 +306,13 @@ async function chat(sessionMessages, patientId) {
         if (apiErr.code === 'tool_use_failed' && apiErr.failed_generation) {
           console.warn('⚠️  XML hallucination detected - attempting recovery...');
           const fg = apiErr.failed_generation;
-          // Match: <function=NAME{...args...}</function>  OR  <function=NAME {...args...}>
-          const xmlMatch = fg.match(/<function=(\w+)\s*(\{.*?\})\s*<\/function>/s)
-            || fg.match(/<function=(\w+)\s*(\{.*?\})/s);
+          // Match variations of <function=NAME{...args...}</function> or <function=NAME":{...args...}></function>
+          const xmlMatch = fg.match(/<function=([a-zA-Z0-9_]+)[^\{]*(\{.*?\})\s*<\/function>/s)
+            || fg.match(/<function=([a-zA-Z0-9_]+)[^\{]*(\{.*?\})/s);
           if (xmlMatch) {
             const fnName = xmlMatch[1];
-            const fnArgs = JSON.parse(xmlMatch[2]);
+            let cleanArgs = xmlMatch[2].replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+            const fnArgs = JSON.parse(cleanArgs);
             console.log(`🔧 Recovered XML tool call: ${fnName}`, fnArgs);
             const toolResult = handleFunctionCall(fnName, fnArgs, patientId);
  

@@ -16,16 +16,19 @@ git clone https://github.com/KenEverestNunes/AI-for-patient-scheduling.git
 cd AI-for-patient-scheduling/server
 
 echo "4. Injecting Credentials..."
-# NOTE: Replace these placeholders with your actual keys manually on the EC2 instance!
+# NOTE: Update these values on your EC2 instance!
 cat << 'EOF' > .env
 PORT=3001
-CLIENT_URL=http://localhost:5173
+# Replace with your actual EC2 public URL or domain!
+CLIENT_URL=http://<YOUR_EC2_PUBLIC_IP_OR_DOMAIN>
 SENDGRID_API_KEY=<YOUR_SENDGRID_API_KEY>
 SENDGRID_SENDER_EMAIL=<YOUR_SENDGRID_EMAIL>
 VAPI_API_KEY=<YOUR_VAPI_API_KEY>
 VAPI_ASSISTANT_ID=<YOUR_VAPI_ASSISTANT_ID>
 GROQ_API_KEY=<YOUR_GROQ_API_KEY>
 VAPI_PHONE_NUMBER_ID=<YOUR_VAPI_PHONE_NUMBER_ID>
+# Optional: Set this to your Ngrok or Domain URL
+# VAPI_WEBHOOK_URL=https://your-domain.com
 EOF
 
 echo "5. Starting Backend..."
@@ -73,8 +76,13 @@ if ! command -v ngrok &> /dev/null; then
     sudo apt-get update -y && sudo apt-get install ngrok -y
 fi
 
-# Add your token manually on the server before running the script
-ngrok config add-authtoken <YOUR_NGROK_AUTH_TOKEN>
+# Use NGROK_AUTH_TOKEN from your environment if possible
+if [ -z "$NGROK_AUTH_TOKEN" ]; then
+    echo "WARNING: NGROK_AUTH_TOKEN not set. Skipping Ngrok login."
+else
+    ngrok config add-authtoken "$NGROK_AUTH_TOKEN"
+fi
+
 killall ngrok || true
 nohup ngrok http 3001 --log stdout > /var/log/ngrok.log 2>&1 &
 

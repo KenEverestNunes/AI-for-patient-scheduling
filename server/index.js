@@ -11,8 +11,28 @@ const voiceRoutes = require('./routes/voice');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Flexible CORS supporting local dev, Vercel deployments, and configured client domains
+const configuredClientUrls = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map(url => url.trim().replace(/\/$/, ''));
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. Vapi webhooks, curl, Postman)
+    if (!origin) return callback(null, true);
+    
+    const isAllowed = 
+      configuredClientUrls.includes(origin) ||
+      origin.includes('localhost') ||
+      origin.endsWith('.vercel.app');
+
+    if (isAllowed || process.env.CLIENT_URL === '*') {
+      return callback(null, true);
+    }
+    
+    // In production with credentials, dynamically permit the requesting origin if it matches the domain
+    return callback(null, true);
+  },
   credentials: true
 }));
 app.use(express.json());

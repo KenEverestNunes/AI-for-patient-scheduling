@@ -189,7 +189,7 @@ The following immediate fixes have already been implemented in the active worksp
 
 | ID | Issue Title | Priority | Labels | GitHub Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **#1** | `[bug]: Fix unhandled TypeError in matchDoctor during searchAvailabilities tool calls` | **P0 (Critical)** | `bug`, `backend`, `voice` | 🟢 [Created (#1)](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/1) |
+| **#1** | `[bug]: Fix unhandled TypeError in matchDoctor during searchAvailabilities tool calls` | **P0 (Critical)** | `bug`, `backend`, `voice` | 🟣 [Fixed in `b4a152d`](https://github.com/KenEverestNunes/AI-for-patient-scheduling/commit/b4a152d) (Resolves #1) |
 | **#2** | `[migration]: Replace in-memory db.json with Neon Serverless PostgreSQL schema` | **P0 (Critical)** | `enhancement`, `database`, `migration` | ⚪ Queued |
 | **#3** | `[security]: Implement authentication and rate-limiting on patient data routes` | **P1 (High)** | `security`, `hipaa`, `backend` | ⚪ Queued |
 | **#4** | `[security]: Verify Vapi webhook signature/secret on /api/voice/tool` | **P1 (High)** | `security`, `voice`, `backend` | ⚪ Queued |

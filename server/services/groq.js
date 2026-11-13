@@ -7,7 +7,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const MODEL_NAME = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 console.log(`🤖 Using Groq model: ${MODEL_NAME}`);
 
-const SYSTEM_PROMPT = `You are a friendly, professional AI medical receptionist for Kyron Medical Group. Your name is Riley.
+const SYSTEM_PROMPT = `You are a friendly, professional AI medical receptionist for Kyron Medical Group. Your name is Kyra.
 
 CRITICAL TOOL CALLING RULE (HIGHEST PRIORITY):
 You have access to JSON-based API tools. When you need to call a tool, you MUST use the native tool_calls API mechanism ONLY.
@@ -139,11 +139,15 @@ const tools = [
 function handleFunctionCall(name, args, patientId) {
   switch (name) {
     case 'searchAvailabilities': {
-      const doctor = matchDoctor(args.bodyPart);
+      const searchTarget = args?.bodyPart;
+      const doctor = matchDoctor(searchTarget);
       if (!doctor) {
+        const failureMsg = searchTarget 
+          ? `Our practice does not have a specialist for "${searchTarget}". We recommend consulting your primary care physician for a referral.`
+          : `Please specify the symptom or specialty you need assistance with so I can find the right specialist.`;
         return {
           success: false,
-          message: `Our practice does not have a specialist for "${args.bodyPart}". We recommend consulting your primary care physician for a referral.`,
+          message: failureMsg,
           availableSpecialties: doctors.map(d => d.specialty)
         };
       }

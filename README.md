@@ -1,4 +1,4 @@
-# AI for Patient Scheduling (Kyron Medical)
+# CareSync Health — AI Patient Intake & Voice Receptionist
 
 An intelligent, multi-channel patient intake, scheduling, and voice receptionist platform powered by **Groq (Llama 3.3 70B)** and **Vapi Telephony**.
 

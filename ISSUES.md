@@ -1,4 +1,4 @@
-# Kyron Medical: Technical Audit, Failure Modes & Hosting Assessment
+# CareSync Health: Technical Audit, Failure Modes & Hosting Assessment
 
 > **Status:** Critical Review & Migration In Progress  
 > **Scope:** Full-Stack Architecture, Hosting Infrastructure, Telephony (Vapi), LLM Integration (Groq), Security & Data Integrity
@@ -195,6 +195,6 @@ The following immediate fixes have already been implemented in the active worksp
 | **[#5](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/5)** | `[security]: Verify Vapi webhook signature/secret on /api/voice/tool` | **P1 (High)** | `security`, `voice`, `backend` | 🟢 **Open** |
 | **[#6](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/6)** | `[bug]: Add schema validation for /api/intake registration payloads` | **P2 (Medium)** | `bug`, `validation` | 🟢 **Open** |
 | **[#7](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/7)** | `[bug]: Fix React component unmount memory leak in ChatInterface voice handoff` | **P2 (Medium)** | `bug`, `frontend`, `performance` | 🟣 **Fixed in `fix/react-unmount-timer-leak`** (Resolves #7) |
-| **[#9](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/9)** | `[infra]: Configure Vercel deployment and rewrites for React frontend` | **P1 (High)** | `enhancement`, `frontend`, `migration` | 🟢 **Open** |
+| **[#9](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/9)** | `[infra]: Configure Vercel deployment and rewrites for React frontend` | **P1 (High)** | `enhancement`, `frontend`, `migration` | 🟣 **Fixed in `feat/rebrand-and-vercel-config`** (Resolves #9) |
 
 ---

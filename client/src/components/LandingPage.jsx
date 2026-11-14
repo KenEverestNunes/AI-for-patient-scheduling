@@ -12,7 +12,7 @@ export default function LandingPage({ onGetStarted }) {
             <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
           </svg>
         </div>
-        <span className="font-bold text-lg tracking-wide hidden sm:block">Kyron Medical</span>
+        <span className="font-bold text-lg tracking-wide hidden sm:block">CareSync Health</span>
       </div>
 
       {/* Background Ambience */}
@@ -63,7 +63,7 @@ export default function LandingPage({ onGetStarted }) {
             </div> 
           
           <p className="mt-8 mb-0 text-xs font-medium text-slate-500 uppercase tracking-widest text-center">
-            No account needed • 100% HIPAA Compliant
+            No account needed • Privacy-First Architecture
           </p>
           
         </div>

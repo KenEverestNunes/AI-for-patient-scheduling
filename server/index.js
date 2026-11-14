@@ -49,5 +49,5 @@ app.get('/api/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🏥 Kyron Medical API running on port ${PORT}`);
+  console.log(`🏥 CareSync Health API running on port ${PORT}`);
 });

@@ -21,21 +21,35 @@ cat << 'EOF' > .env
 PORT=3001
 # Replace with your actual EC2 public URL or domain!
 CLIENT_URL=http://<YOUR_EC2_PUBLIC_IP_OR_DOMAIN>
-SENDGRID_API_KEY=<YOUR_SENDGRID_API_KEY>
-SENDGRID_SENDER_EMAIL=<YOUR_SENDGRID_EMAIL>
+BACKEND_URL=http://<YOUR_EC2_PUBLIC_IP_OR_DOMAIN>
+
+# Neon PostgreSQL Database
+DATABASE_URL=<YOUR_NEON_DATABASE_URL>
+
+# Security & Authentication
+JWT_SECRET=<YOUR_JWT_SECRET>
+VAPI_WEBHOOK_SECRET=<YOUR_VAPI_WEBHOOK_SECRET>
+
+# Groq (LLM Chat & Triage)
+GROQ_API_KEY=<YOUR_GROQ_API_KEY>
+GROQ_MODEL=llama-3.3-70b-versatile
+
+# Vapi (Voice AI & Telephony)
 VAPI_API_KEY=<YOUR_VAPI_API_KEY>
 VAPI_ASSISTANT_ID=<YOUR_VAPI_ASSISTANT_ID>
-GROQ_API_KEY=<YOUR_GROQ_API_KEY>
 VAPI_PHONE_NUMBER_ID=<YOUR_VAPI_PHONE_NUMBER_ID>
-# Optional: Set this to your Ngrok or Domain URL
 # VAPI_WEBHOOK_URL=https://your-domain.com
+
+# SendGrid (Appointment Confirmation Emails)
+SENDGRID_API_KEY=<YOUR_SENDGRID_API_KEY>
+SENDGRID_SENDER_EMAIL=<YOUR_SENDGRID_EMAIL>
 EOF
 
 echo "5. Starting Backend..."
 npm install
-pm2 stop kyron-backend || true
-pm2 delete kyron-backend || true
-pm2 start index.js --name kyron-backend
+pm2 stop caresync-backend || true
+pm2 delete caresync-backend || true
+pm2 start index.js --name caresync-backend
 pm2 save
 
 echo "6. Building Frontend..."

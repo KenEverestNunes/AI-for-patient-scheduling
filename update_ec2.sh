@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Updating Kyron Medical..."
+echo "🚀 Updating CareSync Health..."
 
 # 1. Pull latest code
 git pull
@@ -10,7 +10,7 @@ git pull
 echo "📦 Updating Backend..."
 cd server
 npm install
-pm2 restart kyron-backend
+pm2 restart caresync-backend
 cd ..
 
 # 3. Update Frontend

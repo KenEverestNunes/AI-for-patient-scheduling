@@ -1,19 +1,33 @@
 @import "tailwindcss";
 
-/* Kyron Medical Brand Colors */
+/* CareSync Health Brand Colors */
 @theme {
-  --color-kyron-primary: #0ea5e9;
-  --color-kyron-secondary: #06b6d4;
-  --color-kyron-accent: #8b5cf6;
-  --color-kyron-dark: #0f172a;
-  --color-kyron-darker: #020617;
-  --color-kyron-glass: rgba(255, 255, 255, 0.08);
-  --color-kyron-glass-border: rgba(255, 255, 255, 0.12);
-  --color-kyron-glass-hover: rgba(255, 255, 255, 0.15);
-  --color-kyron-text: #f1f5f9;
-  --color-kyron-text-muted: #94a3b8;
-  --color-kyron-success: #10b981;
-  --color-kyron-error: #ef4444;
+  --color-caresync-primary: #0ea5e9;
+  --color-caresync-secondary: #06b6d4;
+  --color-caresync-accent: #8b5cf6;
+  --color-caresync-dark: #0f172a;
+  --color-caresync-darker: #020617;
+  --color-caresync-glass: rgba(255, 255, 255, 0.08);
+  --color-caresync-glass-border: rgba(255, 255, 255, 0.12);
+  --color-caresync-glass-hover: rgba(255, 255, 255, 0.15);
+  --color-caresync-text: #f1f5f9;
+  --color-caresync-text-muted: #94a3b8;
+  --color-caresync-success: #10b981;
+  --color-caresync-error: #ef4444;
+
+  /* Aliases for backwards compatibility */
+  --color-kyron-primary: var(--color-caresync-primary);
+  --color-kyron-secondary: var(--color-caresync-secondary);
+  --color-kyron-accent: var(--color-caresync-accent);
+  --color-kyron-dark: var(--color-caresync-dark);
+  --color-kyron-darker: var(--color-caresync-darker);
+  --color-kyron-glass: var(--color-caresync-glass);
+  --color-kyron-glass-border: var(--color-caresync-glass-border);
+  --color-kyron-glass-hover: var(--color-caresync-glass-hover);
+  --color-kyron-text: var(--color-caresync-text);
+  --color-kyron-text-muted: var(--color-caresync-text-muted);
+  --color-kyron-success: var(--color-caresync-success);
+  --color-kyron-error: var(--color-caresync-error);
 }
 
 /* Global styles */

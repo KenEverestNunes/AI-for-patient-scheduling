@@ -406,7 +406,7 @@
         },
         {
           "role": "assistant",
-          "content": "Hello Ken, nice to meet you. How can I help you with scheduling an appointment at Kyron Medical Group today?",
+          "content": "Hello Ken, nice to meet you. How can I help you with scheduling an appointment at CareSync Health Group today?",
           "timestamp": "2026-03-21T18:16:29.289Z"
         },
         {
@@ -443,7 +443,7 @@
         },
         {
           "role": "assistant",
-          "content": "Hello Ken, nice to meet you. How can I assist you today at Kyron Medical Group?",
+          "content": "Hello Ken, nice to meet you. How can I assist you today at CareSync Health Group?",
           "timestamp": "2026-03-21T18:30:59.738Z"
         },
         {

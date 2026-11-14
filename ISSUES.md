@@ -185,16 +185,16 @@ The following immediate fixes have already been implemented in the active worksp
 > **Target Architecture:** Vercel (Frontend & Serverless API) + Neon (Serverless PostgreSQL)  
 > **Repository:** `KenEverestNunes/AI-for-patient-scheduling`
 
-### Issue Tracking Queue
+### Issue Tracking Queue (Synced with GitHub)
 
-| ID | Issue Title | Priority | Labels | GitHub Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **#1** | `[bug]: Fix unhandled TypeError in matchDoctor during searchAvailabilities tool calls` | **P0 (Critical)** | `bug`, `backend`, `voice` | 🟣 [Fixed in `b4a152d`](https://github.com/KenEverestNunes/AI-for-patient-scheduling/commit/b4a152d) (Resolves #1) |
-| **#2** | `[migration]: Replace in-memory db.json with Neon Serverless PostgreSQL schema` | **P0 (Critical)** | `enhancement`, `database`, `migration` | ⚪ Queued |
-| **#3** | `[security]: Implement authentication and rate-limiting on patient data routes` | **P1 (High)** | `security`, `hipaa`, `backend` | ⚪ Queued |
-| **#4** | `[security]: Verify Vapi webhook signature/secret on /api/voice/tool` | **P1 (High)** | `security`, `voice`, `backend` | ⚪ Queued |
-| **#5** | `[bug]: Add schema validation for /api/intake registration payloads` | **P2 (Medium)** | `bug`, `validation` | ⚪ Queued |
-| **#6** | `[bug]: Fix React component unmount memory leak in ChatInterface voice handoff` | **P2 (Medium)** | `bug`, `frontend`, `performance` | ⚪ Queued |
-| **#7** | `[infra]: Configure Vercel deployment and rewrites for React frontend` | **P1 (High)** | `infra`, `frontend`, `migration` | ⚪ Queued |
+| GitHub # | Issue Title | Priority | Labels | Current Status |
+| :---: | :--- | :--- | :--- | :--- |
+| **[#1](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/1)** | `[bug]: Fix unhandled TypeError in matchDoctor during searchAvailabilities tool calls` | **P0 (Critical)** | `bug`, `backend`, `voice` | 🟣 **Resolved & Closed** (Merged in PR #2) |
+| **[#3](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/3)** | `[migration]: Replace in-memory db.json with Neon Serverless PostgreSQL schema` | **P0 (Critical)** | `enhancement`, `database`, `migration` | 🟢 **Open** (Up Next) |
+| **[#4](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/4)** | `[security]: Implement authentication and rate-limiting on patient data routes` | **P1 (High)** | `security`, `hipaa`, `backend` | 🟢 **Open** |
+| **[#5](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/5)** | `[security]: Verify Vapi webhook signature/secret on /api/voice/tool` | **P1 (High)** | `security`, `voice`, `backend` | 🟢 **Open** |
+| **[#6](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/6)** | `[bug]: Add schema validation for /api/intake registration payloads` | **P2 (Medium)** | `bug`, `validation` | 🟢 **Open** |
+| **[#7](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/7)** | `[bug]: Fix React component unmount memory leak in ChatInterface voice handoff` | **P2 (Medium)** | `bug`, `frontend`, `performance` | 🟢 **Open** |
+| **[#9](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/9)** | `[infra]: Configure Vercel deployment and rewrites for React frontend` | **P1 (High)** | `enhancement`, `frontend`, `migration` | 🟢 **Open** |
 
 ---

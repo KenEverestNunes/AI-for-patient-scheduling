@@ -2,6 +2,24 @@ const express = require('express');
 const router = express.Router();
 const { getChatSession, getPatient, getPatientByPhone, getLatestSessionForPatient } = require('../data/store');
 
+// Resolve the public backend URL for Vapi webhooks (Railway, Render, or custom domain)
+function getWebhookBaseUrl(req) {
+  const envUrl = process.env.VAPI_WEBHOOK_URL || process.env.BACKEND_URL;
+  if (envUrl && !envUrl.includes('localhost') && !envUrl.includes('127.0.0.1')) {
+    return envUrl.replace(/\/$/, '');
+  }
+
+  if (req && req.headers && req.headers.host) {
+    const proto = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'http');
+    const host = req.headers.host;
+    if (!host.includes('localhost') && !host.includes('127.0.0.1')) {
+      return `${proto}://${host}`;
+    }
+  }
+
+  return (envUrl || `http://localhost:${process.env.PORT || 3001}`).replace(/\/$/, '');
+}
+
 // POST /api/voice/handoff - Initiate voice call handoff
 router.post('/handoff', async (req, res) => {
   try {
@@ -30,28 +48,20 @@ router.post('/handoff', async (req, res) => {
     const vapiAssistantId = process.env.VAPI_ASSISTANT_ID;
     const vapiPhoneNumberId = process.env.VAPI_PHONE_NUMBER_ID;
     
-    // Automatically discover the live Ngrok URL
-    let ngrokUrl = process.env.VAPI_WEBHOOK_URL || 'https://muzzy-braden-civilly.ngrok-free.dev';
-    try {
-      const ngrokRes = await fetch('http://127.0.0.1:4040/api/tunnels');
-      if (ngrokRes.ok) {
-        const data = await ngrokRes.json();
-        const httpsTunnel = data.tunnels?.find(t => t.public_url.startsWith('https'));
-        if (httpsTunnel) ngrokUrl = httpsTunnel.public_url;
-      }
-    } catch(e) { }
+    const webhookBaseUrl = getWebhookBaseUrl(req);
+    console.log(`📡 Voice webhook URL: ${webhookBaseUrl}/api/voice/tool`);
 
     const dynamicTools = require('../services/groq').tools.map(t => ({
       async: false,
       messages: [{ type: "request-start", content: "Let me check the system..." }],
       ...t,
-      server: { url: ngrokUrl + '/api/voice/tool?patientId=' + (patientId || '') }
+      server: { url: `${webhookBaseUrl}/api/voice/tool?patientId=${patientId || ''}` }
     }));
 
     if (!vapiApiKey || !vapiAssistantId || !vapiPhoneNumberId) {
       return res.status(500).json({ 
         error: 'Voice AI not configured',
-        message: 'Voice call feature is missing Phone Number ID. Please check your Vapi configuration.'
+        message: 'Voice call feature is missing API Key, Assistant ID, or Phone Number ID. Please check your Vapi configuration.'
       });
     }
 
@@ -72,11 +82,11 @@ router.post('/handoff', async (req, res) => {
           endCallPhrases: ["Goodbye.", "Goodbye!"],
           model: {
             provider: 'groq',
-            model: 'llama-3.3-70b-versatile',
+            model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
             messages: [
               {
                 role: 'system',
-                content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: This is a VOICE CALL. Be EXTREMELY CONCISE. Use very short sentences (under 15 words). Acknowledge the previous chat context briefly, then asking for the next step. Never list more than 2-3 options at once.\n\nPATIENT NAME: {{patientName}}\nPREVIOUS CHAT CONTEXT:\n{{chatContext}}'
+                content: require('../services/groq').SYSTEM_PROMPT + '\n\nCRITICAL VOICE INSTRUCTION: This is a VOICE CALL. Be EXTREMELY CONCISE. Use very short sentences (under 15 words). Acknowledge the previous chat context briefly, then ask for the next step. Never list more than 2-3 options at once.\n\nPATIENT NAME: {{patientName}}\nPREVIOUS CHAT CONTEXT:\n{{chatContext}}'
               }
             ],
             tools: dynamicTools
@@ -96,7 +106,11 @@ router.post('/handoff', async (req, res) => {
       return res.status(response.status).json(data);
     }
 
-    res.json({ success: true, callId: data.id });
+    res.json({
+      success: true,
+      callId: data.id,
+      message: `Call initiated to ${formattedPhone}. Please answer your phone!`
+    });
   } catch (error) {
     console.error('Failed to initiate call:', error);
     res.status(500).json({ error: 'Failed to initiate call' });
@@ -130,25 +144,16 @@ router.post('/inbound', async (req, res) => {
     const pName = patient.firstName || 'there';
     
     const greeting = hasContext 
-      ? `Hi ${pName}! This is Riley from Kyron Medical. I'm picking up from our chat. How can I help?`
-      : `Thank you for calling Kyron Medical Group. This is Riley, your scheduling assistant. How may I help you today?`;
+      ? `Hi ${pName}! This is Kyra from Kyron Medical. I'm picking up from our chat. How can I help?`
+      : `Thank you for calling Kyron Medical Group. This is Kyra, your scheduling assistant. How may I help you today?`;
 
-    // Discover Ngrok URL
-    let ngrokUrl = process.env.VAPI_WEBHOOK_URL || 'https://muzzy-braden-civilly.ngrok-free.dev';
-    try {
-      const ngrokRes = await fetch('http://127.0.0.1:4040/api/tunnels');
-      if (ngrokRes.ok) {
-        const data = await ngrokRes.json();
-        const httpsTunnel = data.tunnels?.find(t => t.public_url.startsWith('https'));
-        if (httpsTunnel) ngrokUrl = httpsTunnel.public_url;
-      }
-    } catch(e) { }
+    const webhookBaseUrl = getWebhookBaseUrl(req);
 
     const dynamicTools = require('../services/groq').tools.map(t => ({
       async: false,
       messages: [{ type: "request-start", content: "Let me check the system..." }],
       ...t,
-      server: { url: ngrokUrl + '/api/voice/tool?patientId=' + (patient ? patient.id : '') }
+      server: { url: `${webhookBaseUrl}/api/voice/tool?patientId=${patient ? patient.id : ''}` }
     }));
 
     return res.json({
@@ -157,7 +162,7 @@ router.post('/inbound', async (req, res) => {
         firstMessage: greeting,
         model: {
           provider: 'groq',
-          model: 'llama-3.3-70b-versatile',
+          model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
           messages: [
             {
               role: 'system',

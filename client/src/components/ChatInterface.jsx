@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
-const API_URL = '/api'
+const API_URL = import.meta.env.VITE_API_URL || '/api'
 
 export default function ChatInterface({ patientData, sessionId }) {
   const [messages, setMessages] = useState([
@@ -94,17 +94,21 @@ export default function ChatInterface({ patientData, sessionId }) {
         setCallStatus('success')
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: `📞 ${data.message}`
+          content: `📞 ${data.message || 'Call initiated. Please answer your phone!'}`
         }])
       } else {
         setCallStatus('error')
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: `❌ ${data.message || 'Unable to place the call right now.'}`
+          content: `❌ ${data.message || data.error || 'Unable to place the call right now.'}`
         }])
       }
     } catch (err) {
       setCallStatus('error')
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: `❌ Unable to place the call right now. Please check your connection or contact our office at (215) 555-0100.`
+      }])
     }
     setTimeout(() => {
       setShowCallModal(false)

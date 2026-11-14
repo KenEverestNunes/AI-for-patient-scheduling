@@ -134,7 +134,9 @@ syncAvailabilities();
 
 // Find the best matching doctor for a body part / reason
 function matchDoctor(reason) {
-  const reasonLower = reason.toLowerCase();
+  if (!reason || typeof reason !== 'string') return null;
+  const reasonLower = reason.toLowerCase().trim();
+  if (!reasonLower) return null;
   let bestMatch = null;
   let bestScore = 0;
 

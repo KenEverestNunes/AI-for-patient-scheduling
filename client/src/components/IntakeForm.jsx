@@ -73,7 +73,7 @@ export default function IntakeForm({ onComplete }) {
             <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
           </svg>
         </div>
-        <span className="font-bold text-lg text-white tracking-wide hidden sm:block">Kyron Medical</span>
+        <span className="font-bold text-lg text-white tracking-wide hidden sm:block">CareSync Health</span>
       </div>
 
       <div className="flex-1 flex flex-col justify-center items-center px-4 py-8 md:py-20 w-full">

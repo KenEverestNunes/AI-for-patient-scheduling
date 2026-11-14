@@ -6,7 +6,7 @@ export default function ChatInterface({ patientData, sessionId }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `Hi ${patientData?.firstName || 'there'}! 👋 I'm Kyra, your AI assistant at Kyron Medical Group. ${
+      content: `Hi ${patientData?.firstName || 'there'}! 👋 I'm Aria, your AI assistant at CareSync Health. ${
         patientData?.reason 
           ? `I see you're here about "**${patientData.reason}**". Let me help you find the right specialist and schedule an appointment!` 
           : `How can I help you today? I can help you schedule appointments, check prescription refills, or answer questions about our offices.`
@@ -150,7 +150,7 @@ export default function ChatInterface({ patientData, sessionId }) {
               </svg>
             </div>
             <div>
-              <h1 className="text-base font-bold text-white tracking-wide">Kyra • AI Assistant</h1>
+              <h1 className="text-base font-bold text-white tracking-wide">Aria • AI Assistant</h1>
               <div className="flex items-center gap-2 mt-0.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                 <span className="text-sm font-medium text-slate-400">Online</span>
@@ -190,7 +190,7 @@ export default function ChatInterface({ patientData, sessionId }) {
                         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                       </svg>
                     </div>
-                    <span className="text-sm font-bold text-sky-400 tracking-wide">Kyra</span>
+                    <span className="text-sm font-bold text-sky-400 tracking-wide">Aria</span>
                   </div>
                 )}
                 <div className="text-[15px] md:text-base leading-relaxed space-y-1">

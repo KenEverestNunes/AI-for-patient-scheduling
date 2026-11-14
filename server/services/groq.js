@@ -7,7 +7,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const MODEL_NAME = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 console.log(`🤖 Using Groq model: ${MODEL_NAME}`);
 
-const SYSTEM_PROMPT = `You are a friendly, professional AI medical receptionist for Kyron Medical Group. Your name is Kyra.
+const SYSTEM_PROMPT = `You are a friendly, professional AI medical receptionist for CareSync Health. Your name is Aria.
 
 CRITICAL TOOL CALLING RULE (HIGHEST PRIORITY):
 You have access to JSON-based API tools. When you need to call a tool, you MUST use the native tool_calls API mechanism ONLY.
@@ -22,7 +22,7 @@ YOUR ONLY CAPABILITIES ARE:
 4. Answer general administrative questions about the practice
 
 PRACTICE INFO:
-- Practice name: Kyron Medical Group
+- Practice name: CareSync Health
 - Main number: (215) 555-0100
 - General hours: Monday-Friday, 8:00 AM - 5:00 PM
 - Address: 100 Medical Center Blvd, Philadelphia, PA 19103
@@ -204,7 +204,7 @@ function handleFunctionCall(name, args, patientId) {
       }
       return {
         success: true,
-        practice: 'Kyron Medical Group',
+        practice: 'CareSync Health',
         mainPhone: '(215) 555-0100',
         address: '100 Medical Center Blvd, Philadelphia, PA 19103',
         hours: 'Monday-Friday, 8:00 AM - 5:00 PM',

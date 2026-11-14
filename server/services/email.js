@@ -42,7 +42,7 @@ async function sendAppointmentConfirmation({ patient, appointment }) {
                 <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
               </svg>
             </div>
-            <h1 class="logo-text">Kyron Medical</h1>
+            <h1 class="logo-text">CareSync Health</h1>
           </div>
           
           <h2>Hi ${patient.firstName}! Your appointment is confirmed ✅</h2>
@@ -81,7 +81,7 @@ async function sendAppointmentConfirmation({ patient, appointment }) {
 
           <div class="footer">
             <p>Need to reschedule or cancel? Call us at (215) 555-0100</p>
-            <p>© ${new Date().getFullYear()} Kyron Medical • Philadelphia, PA</p>
+            <p>© ${new Date().getFullYear()} CareSync Health • Philadelphia, PA</p>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@ async function sendAppointmentConfirmation({ patient, appointment }) {
           to: [{ email: patient.email }],
           subject: `Appointment Confirmed — ${appointment.date} at ${appointment.time} with ${appointment.doctorName}`
         }],
-        from: { email: verifiedSender, name: "Kyron Medical" },
+        from: { email: verifiedSender, name: "CareSync Health" },
         content: [{ type: "text/html", value: emailHtml }]
       }),
     });

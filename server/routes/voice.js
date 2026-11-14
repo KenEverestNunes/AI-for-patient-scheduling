@@ -123,7 +123,7 @@ router.post('/inbound', async (req, res) => {
   
   const defaultResponse = {
     assistantOverrides: {
-      firstMessage: "Hi! You've reached Kyron Medical Group. How can I help you today?"
+      firstMessage: "Hi! You've reached CareSync Health. How can I help you today?"
     }
   };
 
@@ -144,8 +144,8 @@ router.post('/inbound', async (req, res) => {
     const pName = patient.firstName || 'there';
     
     const greeting = hasContext 
-      ? `Hi ${pName}! This is Kyra from Kyron Medical. I'm picking up from our chat. How can I help?`
-      : `Thank you for calling Kyron Medical Group. This is Kyra, your scheduling assistant. How may I help you today?`;
+      ? `Hi ${pName}! This is Aria from CareSync Health. I'm picking up from our chat. How can I help?`
+      : `Thank you for calling CareSync Health. This is Aria, your scheduling assistant. How may I help you today?`;
 
     const webhookBaseUrl = getWebhookBaseUrl(req);
 

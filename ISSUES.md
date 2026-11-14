@@ -194,7 +194,7 @@ The following immediate fixes have already been implemented in the active worksp
 | **[#4](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/4)** | `[security]: Implement authentication and rate-limiting on patient data routes` | **P1 (High)** | `security`, `hipaa`, `backend` | 🟢 **Open** |
 | **[#5](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/5)** | `[security]: Verify Vapi webhook signature/secret on /api/voice/tool` | **P1 (High)** | `security`, `voice`, `backend` | 🟢 **Open** |
 | **[#6](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/6)** | `[bug]: Add schema validation for /api/intake registration payloads` | **P2 (Medium)** | `bug`, `validation` | 🟢 **Open** |
-| **[#7](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/7)** | `[bug]: Fix React component unmount memory leak in ChatInterface voice handoff` | **P2 (Medium)** | `bug`, `frontend`, `performance` | 🟢 **Open** |
+| **[#7](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/7)** | `[bug]: Fix React component unmount memory leak in ChatInterface voice handoff` | **P2 (Medium)** | `bug`, `frontend`, `performance` | 🟣 **Fixed in `fix/react-unmount-timer-leak`** (Resolves #7) |
 | **[#9](https://github.com/KenEverestNunes/AI-for-patient-scheduling/issues/9)** | `[infra]: Configure Vercel deployment and rewrites for React frontend` | **P1 (High)** | `enhancement`, `frontend`, `migration` | 🟢 **Open** |
 
 ---

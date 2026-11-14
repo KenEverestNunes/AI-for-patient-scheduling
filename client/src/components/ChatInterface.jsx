@@ -19,6 +19,7 @@ export default function ChatInterface({ patientData, sessionId }) {
   const [callStatus, setCallStatus] = useState(null)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
+  const callTimeoutRef = useRef(null)
 
   const suggestionHints = [
     "📅 Schedule an appointment",
@@ -36,6 +37,11 @@ export default function ChatInterface({ patientData, sessionId }) {
 
   useEffect(() => {
     inputRef.current?.focus()
+    return () => {
+      if (callTimeoutRef.current) {
+        clearTimeout(callTimeoutRef.current)
+      }
+    }
   }, [])
 
   const sendMessage = async (e, customText = null) => {
@@ -110,7 +116,10 @@ export default function ChatInterface({ patientData, sessionId }) {
         content: `❌ Unable to place the call right now. Please check your connection or contact our office at (215) 555-0100.`
       }])
     }
-    setTimeout(() => {
+    if (callTimeoutRef.current) {
+      clearTimeout(callTimeoutRef.current)
+    }
+    callTimeoutRef.current = setTimeout(() => {
       setShowCallModal(false)
       setCallStatus(null)
     }, 3000)

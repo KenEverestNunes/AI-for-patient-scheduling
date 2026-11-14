@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { chat } = require('../services/groq');
-const { getChatSession, addMessage, getPatient } = require('../data/store');
+const { getChatSession, addMessage } = require('../data/store');
+const { requireAuth } = require('../middleware/auth');
+const { chatLimiter } = require('../middleware/rateLimit');
 
-// POST /api/chat - Send a message and get AI response
-router.post('/', async (req, res) => {
+// POST /api/chat - Send a message and get AI response (Rate-limited)
+router.post('/', chatLimiter, async (req, res) => {
   try {
     const { message, sessionId, patientId } = req.body;
 
@@ -13,17 +15,17 @@ router.post('/', async (req, res) => {
     }
 
     // Get or create chat session
-    const session = getChatSession(sessionId);
+    const session = await getChatSession(sessionId);
     if (patientId) session.patientId = patientId;
 
     // Add user message to session
-    addMessage(sessionId, 'user', message);
+    await addMessage(sessionId, 'user', message);
 
     // Get AI response
     const { text } = await chat(session.messages, patientId);
 
     // Add assistant response to session
-    addMessage(sessionId, 'assistant', text);
+    await addMessage(sessionId, 'assistant', text);
 
     res.json({
       success: true,
@@ -39,10 +41,10 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET /api/chat/:sessionId - Get chat history
-router.get('/:sessionId', (req, res) => {
+// GET /api/chat/:sessionId - Get chat history (Protected)
+router.get('/:sessionId', requireAuth, async (req, res) => {
   try {
-    const session = getChatSession(req.params.sessionId);
+    const session = await getChatSession(req.params.sessionId);
     res.json({ success: true, messages: session.messages });
   } catch (error) {
     console.error('Get chat error:', error);

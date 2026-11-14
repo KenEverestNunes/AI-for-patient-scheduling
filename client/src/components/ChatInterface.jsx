@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 
 const API_URL = import.meta.env.VITE_API_URL || '/api'
 
-export default function ChatInterface({ patientData, sessionId }) {
+export default function ChatInterface({ patientData, sessionId, sessionToken }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -56,9 +56,13 @@ export default function ChatInterface({ patientData, sessionId }) {
     setLoading(true)
 
     try {
+      const token = sessionToken || sessionStorage.getItem('caresync_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch(`${API_URL}/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           message: userMessage,
           sessionId,
@@ -85,9 +89,13 @@ export default function ChatInterface({ patientData, sessionId }) {
   const handleVoiceCall = async () => {
     setCallStatus('calling')
     try {
+      const token = sessionToken || sessionStorage.getItem('caresync_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch(`${API_URL}/voice/handoff`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           sessionId,
           patientId: patientData?.id,

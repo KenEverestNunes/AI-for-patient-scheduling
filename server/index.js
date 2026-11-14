@@ -10,6 +10,7 @@ const voiceRoutes = require('./routes/voice');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const { generalLimiter } = require('./middleware/rateLimit');
 
 // Flexible CORS supporting local dev, Vercel deployments, and configured client domains
 const configuredClientUrls = (process.env.CLIENT_URL || 'http://localhost:5173')
@@ -36,6 +37,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use('/api', generalLimiter);
 
 // Routes
 app.use('/api/intake', intakeRoutes);

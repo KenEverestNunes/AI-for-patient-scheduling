@@ -71,7 +71,7 @@ export default function LandingPage({ onGetStarted }) {
 
       <footer className="w-full text-center py-6 mt-auto relative z-10">
         <p className="text-xs text-slate-500 font-medium tracking-wider">
-          Powered by Kyron Medical AI • &copy; {new Date().getFullYear()}
+          Powered by CareSync Health AI • &copy; {new Date().getFullYear()}
         </p>
       </footer>
     </div>

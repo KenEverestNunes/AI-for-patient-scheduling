@@ -8,14 +8,16 @@ function App() {
   const [currentPage, setCurrentPage] = useState('landing')
   const [patientData, setPatientData] = useState(null)
   const [sessionId, setSessionId] = useState(null)
+  const [sessionToken, setSessionToken] = useState(null)
 
   const handleGetStarted = () => {
     setCurrentPage('intake')
   }
 
-  const handleIntakeComplete = (patient, session) => {
+  const handleIntakeComplete = (patient, session, token) => {
     setPatientData(patient)
     setSessionId(session)
+    setSessionToken(token)
     setCurrentPage('chat')
   }
 
@@ -39,6 +41,7 @@ function App() {
           <ChatInterface
             patientData={patientData}
             sessionId={sessionId}
+            sessionToken={sessionToken}
           />
         )}
       </div>

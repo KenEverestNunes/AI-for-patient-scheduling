@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { appointments, patients } = require('../data/store');
+const { appointments } = require('../data/store');
+const { requireAuth } = require('../middleware/auth');
 
-// GET /api/appointments/:patientId - Get patient's appointments
-router.get('/:patientId', (req, res) => {
+// GET /api/appointments/:patientId - Get patient's appointments (Protected)
+router.get('/:patientId', requireAuth, (req, res) => {
   try {
     const patientAppointments = appointments.filter(a => a.patientId === req.params.patientId);
     res.json({ success: true, appointments: patientAppointments });

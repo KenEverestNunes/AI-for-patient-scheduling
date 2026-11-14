@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getChatSession, getPatient, getPatientByPhone, getLatestSessionForPatient } = require('../data/store');
+const { verifyVapiWebhook } = require('../middleware/vapiAuth');
 
 // Resolve the public backend URL for Vapi webhooks (Railway, Render, or custom domain)
 function getWebhookBaseUrl(req) {
@@ -118,7 +119,7 @@ router.post('/handoff', async (req, res) => {
 });
 
 // POST /api/voice/inbound - Handle inbound call webhook from Vapi
-router.post('/inbound', async (req, res) => {
+router.post('/inbound', verifyVapiWebhook, async (req, res) => {
   const payload = req.body;
   
   const defaultResponse = {
@@ -183,7 +184,7 @@ router.post('/inbound', async (req, res) => {
 });
 
 // POST /api/voice/tool - Handle tool calls from Vapi
-router.post('/tool', async (req, res) => {
+router.post('/tool', verifyVapiWebhook, async (req, res) => {
   try {
     const payload = req.body;
     const { message } = payload;

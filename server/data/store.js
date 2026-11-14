@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const neon = require('./neon');
 
 // Hard-coded doctor data with specialties and body part mappings
 const doctors = [
@@ -81,6 +82,62 @@ const db = loadDB();
 let patients = db.patients || [];
 let appointments = db.appointments || [];
 let chatSessions = db.chatSessions || {};
+
+// Sync with Neon PostgreSQL if DATABASE_URL is configured
+async function syncNeonOnStartup() {
+  if (!neon.isNeonConfigured()) return;
+  try {
+    await neon.initSchema();
+    const patientsRes = await neon.query('SELECT * FROM patients ORDER BY created_at ASC');
+    if (patientsRes && patientsRes.rows) {
+      for (const row of patientsRes.rows) {
+        if (!patients.some(p => p.id === row.id)) {
+          patients.push({
+            id: row.id,
+            firstName: row.first_name,
+            lastName: row.last_name,
+            dob: row.dob,
+            phone: row.phone,
+            email: row.email,
+            reason: row.reason || '',
+            smsOptIn: row.sms_opt_in,
+            createdAt: row.created_at ? new Date(row.created_at).toISOString() : new Date().toISOString()
+          });
+        }
+      }
+    }
+    const aptsRes = await neon.query('SELECT * FROM appointments ORDER BY created_at ASC');
+    if (aptsRes && aptsRes.rows) {
+      for (const row of aptsRes.rows) {
+        if (!appointments.some(a => a.id === row.id || a.slotId === row.slot_id)) {
+          appointments.push({
+            id: row.id,
+            slotId: row.slot_id,
+            patientId: row.patient_id,
+            doctorId: row.doctor_id,
+            doctorName: row.doctor_name,
+            specialty: row.specialty,
+            dateTime: row.date_time,
+            date: row.date,
+            time: row.time,
+            reason: row.reason,
+            status: row.status,
+            createdAt: row.created_at ? new Date(row.created_at).toISOString() : new Date().toISOString()
+          });
+          const slot = availabilities.find(s => s.id === row.slot_id);
+          if (slot) slot.booked = true;
+        }
+      }
+    }
+    console.log(`✅ Loaded ${patients.length} patients and ${appointments.length} appointments from Neon PostgreSQL`);
+  } catch (err) {
+    console.error('⚠️ Neon startup sync warning:', err.message);
+  }
+}
+
+if (neon.isNeonConfigured()) {
+  syncNeonOnStartup();
+}
 
 // Generate availability slots for the next 45 days
 function generateAvailabilities() {
@@ -208,6 +265,30 @@ function bookAppointment({ slotId, patientId, reason }) {
 
   appointments.push(appointment);
   saveDB();
+
+  // Async write-through to Neon PostgreSQL if configured
+  if (neon.isNeonConfigured()) {
+    neon.query(
+      `INSERT INTO appointments (id, slot_id, patient_id, doctor_id, doctor_name, specialty, date_time, date, time, reason, status, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+       ON CONFLICT (slot_id) DO NOTHING`,
+      [
+        appointment.id,
+        appointment.slotId,
+        appointment.patientId,
+        appointment.doctorId,
+        appointment.doctorName,
+        appointment.specialty,
+        appointment.dateTime,
+        appointment.date,
+        appointment.time,
+        appointment.reason,
+        appointment.status,
+        appointment.createdAt
+      ]
+    ).catch(err => console.error('Failed to write appointment to Neon:', err.message));
+  }
+
   return { success: true, appointment };
 }
 
@@ -220,6 +301,27 @@ function createPatient(data) {
   };
   patients.push(patient);
   saveDB();
+
+  // Async write-through to Neon PostgreSQL if configured
+  if (neon.isNeonConfigured()) {
+    neon.query(
+      `INSERT INTO patients (id, first_name, last_name, dob, phone, email, reason, sms_opt_in, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       ON CONFLICT (id) DO NOTHING`,
+      [
+        patient.id,
+        patient.firstName,
+        patient.lastName,
+        patient.dob,
+        patient.phone,
+        patient.email,
+        patient.reason || '',
+        Boolean(patient.smsOptIn),
+        patient.createdAt
+      ]
+    ).catch(err => console.error('Failed to write patient to Neon:', err.message));
+  }
+
   return patient;
 }
 
@@ -261,6 +363,24 @@ function addMessage(sessionId, role, content) {
   const session = getChatSession(sessionId);
   session.messages.push({ role, content, timestamp: new Date().toISOString() });
   saveDB();
+
+  // Async write-through to Neon PostgreSQL if configured
+  if (neon.isNeonConfigured()) {
+    const timestamp = session.messages[session.messages.length - 1].timestamp;
+    neon.query(
+      `INSERT INTO chat_sessions (id, patient_id, created_at)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (id) DO NOTHING`,
+      [session.id, session.patientId || null, session.createdAt]
+    ).then(() => {
+      return neon.query(
+        `INSERT INTO chat_messages (session_id, role, content, created_at)
+         VALUES ($1, $2, $3, $4)`,
+        [session.id, role, content, timestamp]
+      );
+    }).catch(err => console.error('Failed to write chat message to Neon:', err.message));
+  }
+
   return session;
 }
 
